@@ -88,9 +88,6 @@ class JSONReporter:
             print(f"❌ Failed to write JSON report to {self.report_path}: {e}")
 
 
-
-    import shutil
-
     def copy_all_screenshots(self):
         screenshots_output_dir = os.path.join(self.output_dir, "screenshots")
         os.makedirs(screenshots_output_dir, exist_ok=True)
@@ -125,6 +122,7 @@ class JSONReporter:
                     return os.path.join("screenshots", file)
         return None
 
+
     def generate_html_report(self):
         # Extract all unique markers
         all_markers = set()
@@ -144,6 +142,7 @@ class JSONReporter:
       .header {{ padding: 0.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }}
       .header.passed {{ background: #e6f4ea; color: #2f7a33; }}
       .header.failed {{ background: #fdecea; color: #a83232; }}
+      .header.skipped {{  background: #fff8e1; color: #b36b00;  }}
       .details {{ padding: 0.5rem 1rem; display: none; border-top: 1px solid #ddd; }}
       .toggle::before {{ content: "▶"; display: inline-block; margin-right: 0.5rem; transition: transform 0.3s ease; }}
       .header.expanded .toggle::before {{ transform: rotate(90deg); }}
@@ -242,15 +241,30 @@ class JSONReporter:
 
         html += '<div id="tests-container">'
 
+
+
+
         # Generate test blocks
         for test in self.results:
-            status_class = 'passed' if test['status'] == 'passed' else 'failed'
+            status_class = (
+                'passed' if test['status'] == 'passed' else
+                'failed' if test['status'] == 'failed' else
+                'skipped'
+            )
             error_html = f"<pre>{test.get('error', '')}</pre>" if test.get('error') else ""
             screenshot_path = self.find_screenshot_and_copy(test['test'])
             screenshot_html = f'<img src="{screenshot_path}" alt="Screenshot">' if screenshot_path else ""
             marker_str = ",".join(test.get("markers", []))
+            stdout_html = ""
+            if test.get('stdout'):
+                stdout_html = f"<div><strong>STDOUT:</strong><pre>{test['stdout']}</pre></div>"
+
+            stderr_html = ""
+            if test.get('stderr'):
+                stderr_html = f"<div><strong>STDERR:</strong><pre>{test['stderr']}</pre></div>"
 
             html += f'''
+            
       <div class="test" data-markers="{marker_str}">
         <div class="header {status_class}" onclick="toggleDetails(this)">
           <span class="toggle"></span>
@@ -260,6 +274,8 @@ class JSONReporter:
         <div class="details">
           {error_html}
           {screenshot_html}
+          {stdout_html}
+        {stderr_html}
         </div>
       </div>
     '''
