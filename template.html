@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Playwright Test Report</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 1rem; background: #f9f9f9; }
+  .test { border: 1px solid #ddd; margin-bottom: 0.5rem; border-radius: 5px; background: white; }
+  .header { padding: 0.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .header.passed { background: #e6f4ea; color: #2f7a33; }
+  .header.failed { background: #fdecea; color: #a83232; }
+  .details { padding: 0.5rem 1rem; display: none; border-top: 1px solid #ddd; }
+  .toggle::before { content: "▶"; display: inline-block; margin-right: 0.5rem; transition: transform 0.3s ease; }
+  .header.expanded .toggle::before { transform: rotate(90deg); }
+  img { max-width: 100%; margin-top: 0.5rem; border: 1px solid #ccc; border-radius: 3px; }
+  .checkbox-container { margin-bottom: 1rem; }
+</style>
+<script>
+  function toggleDetails(headerElem) {
+    headerElem.classList.toggle('expanded');
+    const details = headerElem.nextElementSibling;
+    if (details.style.display === 'block') {
+      details.style.display = 'none';
+    } else {
+      details.style.display = 'block';
+    }
+  }
+
+  function toggleFilter(longestCheckbox) {
+    const failedCheckbox = document.getElementById('failedOnlyCheckbox');
+    const testsContainer = document.getElementById('tests-container');
+    const testElements = Array.from(testsContainer.querySelectorAll('.test'));
+
+    if (longestCheckbox.checked) {
+      failedCheckbox.checked = false;
+
+      testElements.forEach(el => el.style.display = 'block');
+
+      testElements.sort((a, b) => {
+        const aDuration = parseFloat(a.querySelector('.timestamp').textContent.replace(/[^\d.]/g, '')) || 0;
+        const bDuration = parseFloat(b.querySelector('.timestamp').textContent.replace(/[^\d.]/g, '')) || 0;
+        return bDuration - aDuration;
+      });
+
+      testElements.forEach(el => testsContainer.appendChild(el));
+    } else {
+      testElements.forEach(el => el.style.display = 'block');
+    }
+  }
+
+  function toggleFailedOnly(failedCheckbox) {
+    const longestCheckbox = document.getElementById('longestOnlyCheckbox');
+    const testElements = document.querySelectorAll('.test');
+
+    if (failedCheckbox.checked) {
+      longestCheckbox.checked = false;
+
+      testElements.forEach(el => {
+        const header = el.querySelector('.header');
+        const isFailed = header.classList.contains('failed');
+        el.style.display = isFailed ? 'block' : 'none';
+      });
+    } else {
+      testElements.forEach(el => el.style.display = 'block');
+    }
+  }
+
+  window.onload = function() {
+    const failedCheckbox = document.getElementById('failedOnlyCheckbox');
+    const longestCheckbox = document.getElementById('longestOnlyCheckbox');
+
+    failedCheckbox.checked = true;
+    toggleFailedOnly(failedCheckbox);
+
+    failedCheckbox.addEventListener('change', () => toggleFailedOnly(failedCheckbox));
+    longestCheckbox.addEventListener('change', () => toggleFilter(longestCheckbox));
+  };
+</script>
+</head>
+<body>
+<div class="checkbox-container">
+  <label>
+    <input type="checkbox" id="failedOnlyCheckbox" />
+    Show only failed tests
+  </label>
+  <label style="margin-left: 1rem;">
+    <input type="checkbox" id="longestOnlyCheckbox" />
+    Sort by longest running tests
+  </label>
+</div>
+
+{{summary}}
+
+<div id="tests-container">
+{{tests}}
+</div>
+</body>
+</html>
