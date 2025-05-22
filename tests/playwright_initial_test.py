@@ -1,10 +1,34 @@
-import pytest
+import os
+from pathlib import Path
 
+import pytest
+import logging.config
+
+for handler in logging.root.handlers[:]:
+    logging.root.removeHandler(handler)
+
+currdir = str(Path(os.path.dirname(os.path.abspath(__file__))).resolve().parents[0])
+
+dir_path = currdir + "/autologs"
+
+# Make sure the directory to the applogs is valid.  The log wil automatically be created by the logger.
+Path(dir_path).mkdir(parents=True, exist_ok=True)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(dir_path + "/applogs.log"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 @pytest.mark.smoke
 def test_example_failed(page):
     page.goto("https://example.com")
     title = page.title()
     print("this shud come")
+    logger.info("dfdfd")
     assert "Example Domain" in title
 
 @pytest.mark.regression
@@ -12,7 +36,7 @@ def test_example_passed(page):
     page.goto("https://example.com")
     print("in the page")
     title = page.title()
-    print("getting the title")
+    logger.info(f"getting the title from the logger {title}")
     assert "Example Domain" in title
     print("test complete")
 

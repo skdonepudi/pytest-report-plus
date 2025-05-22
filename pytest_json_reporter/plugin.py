@@ -1,5 +1,8 @@
+import io
 import os
+import shutil
 import subprocess
+import warnings
 
 import pytest
 
@@ -7,9 +10,26 @@ import pytest
 import json
 
 from pytest_json_reporter.generate_html_report import JSONReporter
-
+python_executable = shutil.which("python3") or shutil.which("python")
 test_screenshot_paths = {}
 reporter = JSONReporter()
+
+import logging
+
+logger = logging.getLogger()  # root logger
+logger.setLevel(logging.INFO)
+
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter('%(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_runtest_setup(item):
+    if "caplog" not in item.fixturenames:
+        item.fixturenames.append("caplog")
+
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield
@@ -20,25 +40,20 @@ def pytest_runtest_makereport(item, call):
         capture_option = config.getoption("--capture-screenshots")
         tool = config.getoption("--automation-tool")
 
-        should_capture = (
+        caplog_text = None
+        if "caplog" in item.funcargs:
+            caplog = item.funcargs["caplog"]
+            caplog_text = "\n".join(caplog.messages) if caplog.messages else None
+
+        screenshot_path = None
+        should_capture_screenshot = (
             capture_option == "all" or
             (capture_option == "failed" and report.outcome == "failed")
         )
 
-        screenshot_path = None
-        if should_capture:
-            print('capture')
-            driver = None
-            print(tool)
-            if tool == "playwright":
-
-                driver = item.funcargs.get("page", None)
-                print(driver)
-            else:
-                driver = item.funcargs.get("driver", None)
-
+        if should_capture_screenshot:
+            driver = item.funcargs.get("page" if tool == "playwright" else "driver", None)
             if driver:
-                print(driver)
                 screenshot_path = take_screenshot_on_failure(item, driver)
 
         reporter.log_result(
@@ -53,20 +68,44 @@ def pytest_runtest_makereport(item, call):
             stdout=getattr(report, "capstdout", ""),
             stderr=getattr(report, "capstderr", ""),
             screenshot=screenshot_path,
+            logs=caplog_text
         )
+
+import subprocess
 
 
 def pytest_sessionfinish(session, exitstatus):
+    print("pytest_sessionfinish called")
     reporter.write_report()
+
     json_path = session.config.getoption("--json-report")
     html_output = session.config.getoption("--html-output")
     screenshots = session.config.getoption("--screenshots")
 
-    subprocess.run([
-        "python", "pytest_json_reporter/generate_html_report.py",
-        "--report", json_path,
-        "--screenshots", screenshots,
-        "--output", html_output],check=True)
+    # Resolve absolute path of the generate_html_report.py script relative to this file
+    script_path = os.path.join(os.path.dirname(__file__), "generate_html_report.py")
+
+    if not os.path.exists(script_path):
+        print(f"Warning: Report generation script not found at {script_path}. Skipping HTML report generation.")
+        return
+
+    try:
+        subprocess.run([
+            python_executable,
+            script_path,
+            "--report", json_path,
+            "--screenshots", screenshots,
+            "--output", html_output
+        ], check=True)
+    except Exception as e:
+        print(f"Exception during HTML report generation: {e}")
+
+def pytest_sessionstart(session):
+    configure_logging()
+    print("Plugin loaded: pytest_sessionstart called")
+
+def pytest_runtest_logreport(report):
+    print(f"pytest_runtest_logreport: {report.nodeid} - {report.outcome}")
 
 def pytest_load_initial_conftests(args):
     if not any(arg.startswith("--capture") for arg in args):
@@ -77,7 +116,7 @@ def pytest_addoption(parser):
         "--json-report",
         action="store",
         default="playwright_report.json",
-        help="Path to save the JSON test report"
+        help="Directory to save individual JSON test reports"
     )
     parser.addoption(
         "--automation-tool",
@@ -116,4 +155,18 @@ def take_screenshot_selenium(item, driver):
     driver.save_screenshot(path)
     return path
 
+import logging
+import sys
+
+def configure_logging():
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    # Avoid adding multiple handlers if rerun in same session
+    if not any(isinstance(h, logging.StreamHandler) for h in logger.handlers):
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setLevel(logging.INFO)
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
 

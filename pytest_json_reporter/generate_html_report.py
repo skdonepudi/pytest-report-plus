@@ -36,7 +36,6 @@ class JSONReporter:
             for marker in test.get("markers", []):
                 all_markers.add(marker)
         all_markers = sorted(all_markers)
-        print("***" + str(report_path))
 
 
     def load_report(self):
@@ -55,7 +54,8 @@ class JSONReporter:
             lineno=None,
             stdout=None,
             stderr=None,
-            screenshot=None
+            screenshot=None,
+            logs=None,
     ):
         result = {
             "test": test_name,
@@ -69,8 +69,10 @@ class JSONReporter:
             "stdout": stdout,
             "stderr": stderr,
             "timestamp": datetime.utcnow().isoformat() + "Z",
-            "screenshot": screenshot
+            "screenshot": screenshot,
+            "logs": logs or []
         }
+        print(f"Writing {len(self.results)} results to JSON file")
         if error:
             result["error"] = error
         self.results.append(result)
@@ -265,6 +267,10 @@ class JSONReporter:
             if test.get('stderr'):
                 stderr_html = f"<div><strong>STDERR:</strong><pre>{test['stderr']}</pre></div>"
 
+            logs_html = ""
+            if test.get('logs'):
+                logs_html = f"<div><strong>Logs:</strong><pre>{test['logs']}</pre></div>"
+
             html += f'''
             
       <div class="test" data-markers="{marker_str}">
@@ -278,6 +284,7 @@ class JSONReporter:
           {screenshot_html}
           {stdout_html}
         {stderr_html}
+        {logs_html}
         </div>
       </div>
     '''
