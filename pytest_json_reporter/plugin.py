@@ -91,7 +91,6 @@ def take_screenshot_on_failure(item, page):
     os.makedirs(screenshot_dir, exist_ok=True)
     filename = f"{item.name}.png".replace("/", "_").replace("\\", "_")
     path = os.path.join(screenshot_dir, filename)
-    # Assuming sync call here, adjust if async
     page.screenshot(path=path)
     return path
 
