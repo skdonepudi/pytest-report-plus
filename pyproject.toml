@@ -1,22 +1,42 @@
+#[project]
+#name = "pytest_json_reporter"
+#version = "0.1.0"
+#description = "A lightweight Playwright + Pytest JSON reporter with screenshots"
+#authors = [{ name = "Your Name", email = "you@example.com" }]
+#readme = "README.md"
+#requires-python = ">=3.8"
+#dependencies = [
+#    "pytest",
+#    "playwright",
+#    "pytest-playwright"
+#]
+#dynamic = ["license", "classifiers"]
+#
+#[project.optional-dependencies]
+#dev = ["pytest", "playwright", "black", "isort"]
+#
+#[tool.setuptools.packages.find]
+#where = ["."]
+#
+#[project.entry-points.pytest11]
+#playwright-json-reporter = "pytest_json_reporter.plugin"
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "pytest_json_reporter"
+name = "pytest_reporter"
 version = "0.1.0"
-description = "A lightweight Playwright + Pytest JSON reporter with screenshots"
-authors = [{ name = "Your Name", email = "you@example.com" }]
-readme = "README.md"
-requires-python = ">=3.8"
-dependencies = [
-    "pytest",
-    "playwright",
-    "pytest-playwright"
+description = "Lightweight JSON test reporter for Pytest"
+authors = [{name = "Your Name"}]
+license = {text = "MIT"}
+dependencies = []
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Framework :: Pytest",
+    "License :: OSI Approved :: MIT License"
 ]
-dynamic = ["license", "classifiers"]
 
-[project.optional-dependencies]
-dev = ["pytest", "playwright", "black", "isort"]
-
-[tool.setuptools.packages.find]
-where = ["."]
-
-[project.entry-points.pytest11]
-playwright-json-reporter = "pytest_json_reporter.plugin"
+[project.scripts]
+pytest_json_reporter = "pytest_json_reporter.generate_html_report:main"
