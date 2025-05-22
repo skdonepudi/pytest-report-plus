@@ -40,3 +40,10 @@ classifiers = [
 
 [project.scripts]
 pytest_json_reporter = "pytest_json_reporter.generate_html_report:main"
+
+[tool.setuptools]
+packages = ["pytest_json_reporter"]
+
+[project.entry-points.pytest11]
+pytest_json_reporter = "pytest_json_reporter.plugin"
+
