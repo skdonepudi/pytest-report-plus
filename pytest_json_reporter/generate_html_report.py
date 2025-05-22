@@ -55,7 +55,7 @@ class JSONReporter:
             lineno=None,
             stdout=None,
             stderr=None,
-            screenshot
+            screenshot=None
     ):
         result = {
             "test": test_name,
@@ -69,6 +69,7 @@ class JSONReporter:
             "stdout": stdout,
             "stderr": stderr,
             "timestamp": datetime.utcnow().isoformat() + "Z",
+            "screenshot": screenshot
         }
         if error:
             result["error"] = error
