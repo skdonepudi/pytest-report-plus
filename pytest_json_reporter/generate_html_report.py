@@ -140,6 +140,7 @@ class JSONReporter:
     <head>
     <meta charset="UTF-8" />
     <title>Playwright Test Report</title>
+    <a href="flake_report.html" target="_blank">🌀 View Flaky Test Summary</a>
     <style>
       body {{ font-family: Arial, sans-serif; padding: 1rem; background: #f9f9f9; }}
       .test {{ border: 1px solid #ddd; margin-bottom: 0.5rem; border-radius: 5px; background: white; }}

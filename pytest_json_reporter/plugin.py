@@ -1,14 +1,10 @@
-import io
-import os
 import shutil
-import subprocess
-import warnings
+from datetime import datetime
+from pathlib import Path
 
 import pytest
 
-import pytest
-import json
-
+from pytest_json_reporter.generate_flakytest_report import generate_flaky_html
 from pytest_json_reporter.generate_html_report import JSONReporter
 python_executable = shutil.which("python3") or shutil.which("python")
 test_screenshot_paths = {}
@@ -24,6 +20,7 @@ if not logger.handlers:
     formatter = logging.Formatter('%(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
+
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_setup(item):
@@ -56,7 +53,7 @@ def pytest_runtest_makereport(item, call):
             if driver:
                 screenshot_path = take_screenshot_on_failure(item, driver)
 
-        reporter.log_result(
+        result = reporter.log_result(
             test_name=item.name,
             nodeid=item.nodeid,
             status=report.outcome,
@@ -100,6 +97,26 @@ def pytest_sessionfinish(session, exitstatus):
     except Exception as e:
         print(f"Exception during HTML report generation: {e}")
 
+    report_path = session.config.getoption("--json-report")
+    with open(report_path, "r") as f:
+        full_report = json.load(f)
+
+    timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")
+
+    lib_root = Path(__file__).resolve().parent
+    internal_data_dir = lib_root / "flake_run_data" / "runs"
+    internal_data_dir.mkdir(parents=True, exist_ok=True)
+
+    output_path = internal_data_dir / f"{timestamp}.json"
+    with open(output_path, "w") as f:
+        json.dump(full_report, f, indent=2)
+
+    print(f"📦 Internal flake run data saved to {output_path}")
+
+    # Pass the path to internal_data_dir to detect_flakes so it knows where to read runs from
+    detect_flakes(runs_dir=internal_data_dir)
+
+
 def pytest_sessionstart(session):
     configure_logging()
     print("Plugin loaded: pytest_sessionstart called")
@@ -135,7 +152,6 @@ def pytest_addoption(parser):
     parser.addoption("--html-output", default="report_output")
     parser.addoption("--screenshots", default="screenshots")
 
-import os
 
 def take_screenshot_on_failure(item, page):
     print("✅ take_screenshot_on_failure was called")
@@ -169,4 +185,58 @@ def configure_logging():
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         logger.addHandler(handler)
+
+
+import os
+import json
+from collections import defaultdict
+
+
+def detect_flakes(runs_dir: Path):
+    # Read run files from the internal library folder
+    run_files = sorted(runs_dir.glob("*.json"))
+    print(run_files)
+
+    test_status_map = defaultdict(list)
+
+    for run_file in run_files:
+        with open(run_file) as f:
+            run_data = json.load(f)
+            for test in run_data:
+                test_id = test["nodeid"]
+                test_status_map[test_id].append({
+                    "status": test["status"],
+                    "timestamp": test["timestamp"]
+                })
+
+    flaky_tests = {}
+
+    for test_id, history in test_status_map.items():
+        statuses = [entry["status"] for entry in history]
+        status_set = set(statuses)
+
+        if len(status_set) > 1 and 'passed' in status_set and 'failed' in status_set:
+            last_failed_entry = max(
+                (entry for entry in history if entry["status"] == "failed"),
+                key=lambda x: x["timestamp"]
+            )
+            flaky_tests[test_id] = {
+                "statuses": statuses,
+                "last_failed": last_failed_entry["timestamp"]
+            }
+
+    # Write output JSON and HTML report to the client's project folder `flake_data/`
+    client_output_dir = Path("report_output")  # relative to cwd (client's project)
+    client_output_dir.mkdir(parents=True, exist_ok=True)
+
+    flake_json_path = client_output_dir / "flake_report.json"
+    flake_html_path = client_output_dir / "flake_report.html"
+
+    with open(flake_json_path, "w") as f:
+        json.dump(flaky_tests, f, indent=2)
+    print(f"🌀 Flake summary JSON → {flake_json_path}")
+
+    generate_flaky_html(flake_summary=flaky_tests, output_html_path=flake_html_path)
+    print(f"🌐 Flake report HTML → {flake_html_path}")
+
 
