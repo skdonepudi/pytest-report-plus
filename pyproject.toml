@@ -20,30 +20,27 @@
 #
 #[project.entry-points.pytest11]
 #playwright-json-reporter = "pytest_json_reporter.plugin"
-[build-system]
-requires = ["setuptools>=61"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "pytest_reporter"
 version = "0.1.0"
 description = "Lightweight JSON test reporter for Pytest"
-authors = [{name = "Your Name"}]
-license = {text = "MIT"}
-dependencies = []
-requires-python = ">=3.7"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Framework :: Pytest",
-    "License :: OSI Approved :: MIT License"
-]
+authors = ["Your Name"]
+license = "MIT"
+packages = [{ include = "pytest_json_reporter" }]
 
-[project.scripts]
-pytest_json_reporter = "pytest_json_reporter.generate_html_report:main"
+[tool.poetry.dependencies]
+python = ">=3.9"
+yagmail = ">=0.15.293,<0.16.0"
+keyring = ">=25.6.0,<26.0.0"
 
-[tool.setuptools]
-packages = ["pytest_json_reporter"]
+[tool.poetry.dev-dependencies]
+pytest = "^8.0.0"
+pytest-cov = "^4.1.0"
+playwright ="^1.42.0"
+pytest-playwright ="^0.4.3"
 
-[project.entry-points.pytest11]
-pytest_json_reporter = "pytest_json_reporter.plugin"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 

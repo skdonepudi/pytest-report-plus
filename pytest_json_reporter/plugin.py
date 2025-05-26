@@ -1,3 +1,4 @@
+import platform
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -6,6 +7,8 @@ import pytest
 
 from pytest_json_reporter.generate_flakytest_report import generate_flaky_html
 from pytest_json_reporter.generate_html_report import JSONReporter
+from pytest_json_reporter.send_email_report import send_email_from_env, load_email_env
+
 python_executable = shutil.which("python3") or shutil.which("python")
 test_screenshot_paths = {}
 reporter = JSONReporter()
@@ -53,7 +56,7 @@ def pytest_runtest_makereport(item, call):
             if driver:
                 screenshot_path = take_screenshot_on_failure(item, driver)
 
-        result = reporter.log_result(
+        reporter.log_result(
             test_name=item.name,
             nodeid=item.nodeid,
             status=report.outcome,
@@ -97,24 +100,32 @@ def pytest_sessionfinish(session, exitstatus):
     except Exception as e:
         print(f"Exception during HTML report generation: {e}")
 
-    report_path = session.config.getoption("--json-report")
-    with open(report_path, "r") as f:
-        full_report = json.load(f)
+    if session.config.getoption("--detect-flake"):
+        report_path = session.config.getoption("--json-report")
+        with open(report_path, "r") as f:
+            full_report = json.load(f)
 
-    timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")
+        timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")
 
-    lib_root = Path(__file__).resolve().parent
-    internal_data_dir = lib_root / "flake_run_data" / "runs"
-    internal_data_dir.mkdir(parents=True, exist_ok=True)
+        lib_root = Path(__file__).resolve().parent
+        internal_data_dir = lib_root / "flake_run_data" / "runs"
+        internal_data_dir.mkdir(parents=True, exist_ok=True)
 
-    output_path = internal_data_dir / f"{timestamp}.json"
-    with open(output_path, "w") as f:
-        json.dump(full_report, f, indent=2)
+        output_path = internal_data_dir / f"{timestamp}.json"
+        with open(output_path, "w") as f:
+            json.dump(full_report, f, indent=2)
 
-    print(f"📦 Internal flake run data saved to {output_path}")
+        print(f"📦 Internal flake run data saved to {output_path}")
 
-    # Pass the path to internal_data_dir to detect_flakes so it knows where to read runs from
-    detect_flakes(runs_dir=internal_data_dir)
+        # Pass the path to internal_data_dir to detect_flakes so it knows where to read runs from
+        detect_flakes(runs_dir=internal_data_dir)
+    if session.config.getoption("--send-email"):
+        print("📬 --send-email enabled. Sending report...")
+        try:
+            config = load_email_env()
+            send_email_from_env(config)
+        except Exception as e:
+            print(f"❌ Failed to send email: {e}")
 
 
 def pytest_sessionstart(session):
@@ -151,6 +162,18 @@ def pytest_addoption(parser):
     )
     parser.addoption("--html-output", default="report_output")
     parser.addoption("--screenshots", default="screenshots")
+    parser.addoption(
+        "--send-email",
+        action="store_true",
+        default=False,
+        help="Send HTML test report via email after test run"
+    )
+    parser.addoption(
+        "--detect-flake",
+        action="store",
+        default=False,
+        help="Helps capture flaky tests in the last n number of builds"
+    )
 
 
 def take_screenshot_on_failure(item, page):
