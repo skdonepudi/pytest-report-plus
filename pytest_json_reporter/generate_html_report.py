@@ -1,13 +1,12 @@
-
 import shutil
 import argparse
 
 import sys
 from datetime import datetime
 
-
 import os
 import json
+
 
 def main():
     parser = argparse.ArgumentParser(description="Generate HTML report from Playwright JSON report")
@@ -24,6 +23,7 @@ def main():
     reporter.load_report()
     reporter.generate_html_report()
 
+
 class JSONReporter:
     def __init__(self, report_path="playwright_report.json", screenshots_dir="screenshots", output_dir="report_output"):
         self.parsed_data = None
@@ -36,7 +36,6 @@ class JSONReporter:
             for marker in test.get("markers", []):
                 all_markers.add(marker)
         all_markers = sorted(all_markers)
-
 
     def load_report(self):
         with open(self.report_path) as f:
@@ -91,7 +90,6 @@ class JSONReporter:
         except Exception as e:
             print(f"❌ Failed to write JSON report to {self.report_path}: {e}")
 
-
     def copy_all_screenshots(self):
         screenshots_output_dir = os.path.join(self.output_dir, "screenshots")
         os.makedirs(screenshots_output_dir, exist_ok=True)
@@ -125,7 +123,6 @@ class JSONReporter:
                     # Return relative path from output_dir for HTML src
                     return os.path.join("screenshots", file)
         return None
-
 
     def generate_html_report(self):
         # Extract all unique markers
@@ -246,9 +243,6 @@ class JSONReporter:
 
         html += '<div id="tests-container">'
 
-
-
-
         # Generate test blocks
         for test in self.results:
             status_class = (
@@ -273,7 +267,7 @@ class JSONReporter:
                 logs_html = f"<div><strong>Logs:</strong><pre>{test['logs']}</pre></div>"
 
             html += f'''
-            
+
       <div class="test" data-markers="{marker_str}">
         <div class="header {status_class}" onclick="toggleDetails(this)">
           <span class="toggle"></span>
@@ -321,4 +315,3 @@ class JSONReporter:
 
 if __name__ == "__main__":
     main()
-

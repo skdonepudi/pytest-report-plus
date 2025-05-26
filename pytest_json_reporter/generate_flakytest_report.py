@@ -20,7 +20,6 @@ def generate_flaky_html(flake_summary: dict, output_html_path):
             status_list = test_data["statuses"]
             total_runs = len(status_list)
             status_count = Counter(status_list)
-            print(f"status count is {status_count}")
             majority_status = status_count.most_common(1)[0][1]
             last_failed = test_data["last_failed"]
             flakiness_pct = round((total_runs - majority_status) / total_runs * 100, 2)
