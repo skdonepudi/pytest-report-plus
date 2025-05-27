@@ -55,6 +55,7 @@ class JSONReporter:
             stderr=None,
             screenshot=None,
             logs=None,
+            worker=None
     ):
         result = {
             "test": test_name,
@@ -69,7 +70,8 @@ class JSONReporter:
             "stderr": stderr,
             "timestamp": datetime.utcnow().isoformat() + "Z",
             "screenshot": screenshot,
-            "logs": logs or []
+            "logs": logs or [],
+            "worker": worker
         }
         print(f"Writing {len(self.results)} results to JSON file")
         if error:
@@ -272,6 +274,7 @@ class JSONReporter:
         <div class="header {status_class}" onclick="toggleDetails(this)">
           <span class="toggle"></span>
           <span><strong>{test["test"]}</strong> — {test["status"].upper()}</span>
+          <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{test["worker"]}</span>
           <span class="timestamp">⏱ {test.get("duration", 0):.2f}s</span>
         </div>
         <div class="details">

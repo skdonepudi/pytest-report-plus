@@ -38,6 +38,7 @@ pytest = "^8.0.0"
 pytest-cov = "^4.1.0"
 playwright ="^1.42.0"
 pytest-playwright ="^0.4.3"
+pytest-xdist = "^3.7.0"
 
 [build-system]
 requires = ["poetry-core"]
