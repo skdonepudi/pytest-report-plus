@@ -7,11 +7,12 @@ import pytest
 
 from pytest_json_reporter.generate_flakytest_report import generate_flaky_html
 from pytest_json_reporter.generate_html_report import JSONReporter
+from pytest_json_reporter.json_merge import merge_json_reports
 from pytest_json_reporter.send_email_report import send_email_from_env, load_email_env
 
 python_executable = shutil.which("python3") or shutil.which("python")
 test_screenshot_paths = {}
-reporter = JSONReporter()
+
 
 import logging
 
@@ -55,7 +56,8 @@ def pytest_runtest_makereport(item, call):
             driver = item.funcargs.get("page" if tool == "playwright" else "driver", None)
             if driver:
                 screenshot_path = take_screenshot_on_failure(item, driver)
-
+        reporter = config._json_reporter
+        worker_id = os.getenv("PYTEST_XDIST_WORKER") or "main"
         reporter.log_result(
             test_name=item.name,
             nodeid=item.nodeid,
@@ -68,21 +70,35 @@ def pytest_runtest_makereport(item, call):
             stdout=getattr(report, "capstdout", ""),
             stderr=getattr(report, "capstderr", ""),
             screenshot=screenshot_path,
-            logs=caplog_text
+            logs=caplog_text,
+            worker=worker_id
         )
 
 import subprocess
 
 
 def pytest_sessionfinish(session, exitstatus):
+    reporter = session.config._json_reporter
     print("pytest_sessionfinish called")
-    reporter.write_report()
 
-    json_path = session.config.getoption("--json-report")
-    html_output = session.config.getoption("--html-output")
-    screenshots = session.config.getoption("--screenshots")
+    json_path = session.config.getoption("--json-report") or "playwright_report.json"
+    html_output = session.config.getoption("--html-output") or "report_output"
+    screenshots = session.config.getoption("--screenshots") or "screenshots"
 
-    # Resolve absolute path of the generate_html_report.py script relative to this file
+    is_worker = os.getenv("PYTEST_XDIST_WORKER") is not None
+
+    if is_worker:
+        # Just write individual worker's report
+        reporter.write_report()
+        print(f"Worker {os.getenv('PYTEST_XDIST_WORKER')} finished – skipping merge.")
+        return
+
+    # Main process: merge all and generate final report
+    print("Merging reports in main process...")
+    merge_json_reports(directory=".pytest_worker_jsons", output_path=json_path)
+    print(f"✅ Merged report written to {json_path}")
+
+    # Now generate the HTML report
     script_path = os.path.join(os.path.dirname(__file__), "generate_html_report.py")
 
     if not os.path.exists(script_path):
@@ -91,14 +107,15 @@ def pytest_sessionfinish(session, exitstatus):
 
     try:
         subprocess.run([
-            python_executable,
+            sys.executable,
             script_path,
             "--report", json_path,
             "--screenshots", screenshots,
             "--output", html_output
         ], check=True)
+        print(f"✅ HTML report generated at {html_output}/report.html")
     except Exception as e:
-        print(f"Exception during HTML report generation: {e}")
+        print(f"❌ Exception during HTML report generation: {e}")
 
     if session.config.getoption("--detect-flake"):
         report_path = session.config.getoption("--json-report")
@@ -208,6 +225,18 @@ def configure_logging():
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         logger.addHandler(handler)
+
+def pytest_configure(config):
+    INTERNAL_JSON_DIR = Path(".pytest_worker_jsons")
+    report_path = config.getoption("--json-report") or "playwright_report.json"
+    worker_id = os.getenv("PYTEST_XDIST_WORKER")
+
+    if worker_id:
+        INTERNAL_JSON_DIR.mkdir(parents=True, exist_ok=True)
+        name, ext = os.path.splitext(report_path)
+        report_path = INTERNAL_JSON_DIR / f"{name}_{worker_id}{ext}"
+
+    config._json_reporter = JSONReporter(report_path=report_path)
 
 
 import os
