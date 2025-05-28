@@ -53,7 +53,7 @@ poetry add --dev pytest-reporter-plus
 Generate HTML + JSON reports:
 
 ```bash
-pytest --html-report --json-report
+pytest -p pytest_reporter_plus.plugin --json-report
 ```
 You’ll get:
 
@@ -61,7 +61,17 @@ report.html – a clean, styled HTML report
 
 playwright_report.json – structured data for integrations
 
-You can also choose to custom name your output HTML report by mentioning the name of the html report
+## Available Options
+| Option                  | Description                                                        | Default                  | Choices                  |
+| ----------------------- | ------------------------------------------------------------------ | ------------------------ | ------------------------ |
+| `--json-report`         | Path to save individual JSON test reports                          | `playwright_report.json` | *Any valid file path*    |
+| `--automation-tool`     | Specify automation tool used for testing                           | `playwright`             | `playwright`, `selenium` |
+| `--capture-screenshots` | When to capture screenshots                                        | `failed`                 | `failed`, `all`, `none`  |
+| `--html-output`         | Directory to output HTML reports                                   | `report_output`          | *Any valid directory*    |
+| `--screenshots`         | Directory where screenshots will be stored                         | `screenshots`            | *Any valid directory*    |
+| `--send-email`          | Send HTML report via email after the test run                      | `False`                  | `True`, `False`          |
+| `--detect-flake`        | Detect flaky tests based on reruns in the current or last few runs | `False`                  | `True`, `False`          |
+
 
 ## 🔁 Flaky Test Detection
 If a test is retried multiple times (e.g. due to a --reruns plugin), the report will flag it as FLAKY.
