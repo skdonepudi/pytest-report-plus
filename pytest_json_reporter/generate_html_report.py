@@ -265,13 +265,23 @@ class JSONReporter:
             if test.get('logs'):
                 logs_html = f"<div><strong>Logs:</strong><pre>{test['logs']}</pre></div>"
 
+            flaky_badge = ""
+            if test.get("flaky"):
+                flaky_badge = (
+                    '<span class="is-flaky" '
+                    'style="background:#f39c12;color:white;padding:2px 6px;'
+                    'border-radius:3px;font-weight:bold;font-size:0.85em;">FLAKY</span>'
+                )
+
             html += f'''
+            
 
       <div class="test" data-markers="{marker_str}">
         <div class="header {status_class}" onclick="toggleDetails(this)">
           <span class="toggle"></span>
           <span><strong>{test["test"]}</strong> — {test["status"].upper()}</span>
           <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{test["worker"]}</span>
+          <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{flaky_badge}</span>
           <span class="timestamp">⏱ {test.get("duration", 0):.2f}s</span>
         </div>
         <div class="details">

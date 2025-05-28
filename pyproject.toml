@@ -40,6 +40,9 @@ playwright ="^1.42.0"
 pytest-playwright ="^0.4.3"
 pytest-xdist = "^3.7.0"
 
+[tool.poetry.group.dev.dependencies]
+pytest-rerunfailures = "^15.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
