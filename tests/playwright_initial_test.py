@@ -1,8 +1,8 @@
+import logging.config
 import os
 from pathlib import Path
 
 import pytest
-import logging.config
 
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)

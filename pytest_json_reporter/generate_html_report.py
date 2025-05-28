@@ -1,11 +1,8 @@
-import shutil
 import argparse
-
-import sys
-from datetime import datetime
-
-import os
 import json
+import os
+import shutil
+from datetime import datetime
 
 
 def main():
