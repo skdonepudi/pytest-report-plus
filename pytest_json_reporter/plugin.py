@@ -99,6 +99,7 @@ def pytest_sessionfinish(session, exitstatus):
         merge_json_reports(directory=".pytest_worker_jsons", output_path=json_path)
         print(f"✅ Merged report written to {json_path}")
     else:
+        reporter.results = mark_flaky_tests(reporter.results)
         reporter.write_report()
         print(f"✅ Standalone JSON report written to {json_path}")
 
@@ -319,3 +320,21 @@ def detect_flakes(runs_dir: Path):
     generate_flaky_html(flake_summary=flaky_tests, output_html_path=flake_html_path)
     print(f"🌐 Flake report HTML → {flake_html_path}")
 
+def mark_flaky_tests(results):
+    # Group test attempts by nodeid
+    tests_by_nodeid = {}
+    for test in results:
+        tests_by_nodeid.setdefault(test["nodeid"], []).append(test)
+
+    # Only return the final test attempt with flaky info
+    final_results = []
+    for nodeid, attempts in tests_by_nodeid.items():
+        final_test = attempts[-1].copy()
+        if len(attempts) > 1:
+            final_test["flaky"] = True
+            final_test["flaky_attempts"] = [t.get("status") for t in attempts]
+        else:
+            final_test["flaky"] = False
+        final_results.append(final_test)
+
+    return final_results
