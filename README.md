@@ -20,6 +20,12 @@ A powerful, plug-and-play Pytest plugin to generate **HTML + JSON reports**, det
 
 ---
 
+##  Why use pytest-reporter-plus?
+Stop wasting time writing and maintaining custom pytest reporter hooks like pytest_runtest_makereport!
+With pytest-reporter-plus, you get a beautiful, lightweight HTML report out of the box — no extra coding needed.
+
+Just install, run your tests, and let the plugin handle all the reporting magic. Focus on what matters: writing and running your tests.
+
 ## 🚀 Installation
 
 ```bash
