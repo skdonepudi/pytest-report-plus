@@ -100,7 +100,7 @@ email_password=your_sendgrid_api_key
 
 ## Run
 ```commandline
-pytest --html-report --send-email
+pytest --send-email
 ```
 
 ## 🤝 Contributions
