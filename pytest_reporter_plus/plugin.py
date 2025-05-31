@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from pytest_reporter_plus.extract_link import extract_links_from_item
 from pytest_reporter_plus.generate_flakytest_report import generate_flaky_html
 from pytest_reporter_plus.generate_html_report import JSONReporter
 from pytest_reporter_plus.json_merge import merge_json_reports
@@ -73,7 +74,8 @@ def pytest_runtest_makereport(item, call):
             stderr=getattr(report, "capstderr", ""),
             screenshot=screenshot_path,
             logs=caplog_text,
-            worker=worker_id
+            worker=worker_id,
+            links = extract_links_from_item(item)
         )
 
 import subprocess
@@ -140,7 +142,7 @@ def pytest_sessionfinish(session, exitstatus):
         print(f"📦 Internal flake run data saved to {output_path}")
 
         # Pass the path to internal_data_dir to detect_flakes so it knows where to read runs from
-        detect_flakes(runs_dir=internal_data_dir)
+        detect_flakes_by_historytrends(runs_dir=internal_data_dir)
     if session.config.getoption("--send-email"):
         print("📬 --send-email enabled. Sending report...")
         try:
@@ -153,6 +155,9 @@ def pytest_sessionfinish(session, exitstatus):
 def pytest_sessionstart(session):
     configure_logging()
     print("Plugin loaded: pytest_sessionstart called")
+    session.config.addinivalue_line(
+        "markers", "link(url): Add a link to external test case or documentation."
+    )
 
 def pytest_runtest_logreport(report):
     print(f"pytest_runtest_logreport: {report.nodeid} - {report.outcome}")
@@ -274,7 +279,7 @@ import json
 from collections import defaultdict
 
 
-def detect_flakes(runs_dir: Path):
+def detect_flakes_by_historytrends(runs_dir: Path):
     # Read run files from the internal library folder
     run_files = sorted(runs_dir.glob("*.json"))
 
