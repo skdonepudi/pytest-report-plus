@@ -106,6 +106,12 @@ pytest --send-email
 ## 🤝 Contributions
 PRs, issues, and feature requests are welcome! Let's make this tool more awesome together.
 
+### Setting up the project is pretty simple
+```
+docker build -t pytest-reporter-plus .
+docker run -it pytest-reporter-plus /bin/bash 
+```
+
 ## 📛 Naming
 Why pytest-reporter-plus?
 
