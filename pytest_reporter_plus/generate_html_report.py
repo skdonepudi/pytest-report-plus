@@ -52,7 +52,8 @@ class JSONReporter:
             stderr=None,
             screenshot=None,
             logs=None,
-            worker=None
+            worker=None,
+            links=None
     ):
         result = {
             "test": test_name,
@@ -68,7 +69,8 @@ class JSONReporter:
             "timestamp": datetime.utcnow().isoformat() + "Z",
             "screenshot": screenshot,
             "logs": logs or [],
-            "worker": worker
+            "worker": worker,
+            "links": links
         }
         if error:
             result["error"] = error
@@ -84,9 +86,9 @@ class JSONReporter:
         try:
             with open(self.report_path, "w", encoding="utf-8") as f:
                 json.dump(self.results, f, indent=2)
-            print(f"✅ JSON report successfully written to {self.report_path}")
+            print(f"✅ JSON report successfully written")
         except Exception as e:
-            print(f"❌ Failed to write JSON report to {self.report_path}: {e}")
+            print(f"❌ Failed to write JSON report ")
 
     def copy_all_screenshots(self):
         screenshots_output_dir = os.path.join(self.output_dir, "screenshots")
@@ -113,7 +115,6 @@ class JSONReporter:
                 if file.endswith(".png") and test_name in file:
                     src_path = os.path.join(root, file)
 
-                    # Name destination file exactly as the source (or you can rename if needed)
                     dest_path = os.path.join(screenshots_output_dir, file)
 
                     shutil.copyfile(src_path, dest_path)
@@ -124,10 +125,12 @@ class JSONReporter:
 
     def generate_html_report(self):
         # Extract all unique markers
+        ignore_markers = {"link"}
         all_markers = set()
         for test in self.results:
             for marker in test.get("markers", []):
-                all_markers.add(marker)
+                if marker not in ignore_markers:
+                    all_markers.add(marker)
 
         html = f"""
     <!DOCTYPE html>
@@ -270,6 +273,14 @@ class JSONReporter:
                     'style="background:#f39c12;color:white;padding:2px 6px;'
                     'border-radius:3px;font-weight:bold;font-size:0.85em;">FLAKY</span>'
                 )
+            link_html = ""
+            for url in test.get("links", []):
+                link_html += (
+                    f'<a href="{url}" target="_blank" '
+                    f'style="background:#3498db;color:white;padding:2px 6px;'
+                    f'border-radius:3px;font-weight:bold;font-size:0.85em;'
+                    f'text-decoration:none;margin-right:6px;">Link</a>'
+                )
 
             html += f'''
             
@@ -280,6 +291,7 @@ class JSONReporter:
           <span><strong>{test["test"]}</strong> — {test["status"].upper()}</span>
           <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{test["worker"]}</span>
           <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{flaky_badge}</span>
+          <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{link_html}</span>
           <span class="timestamp">⏱ {test.get("duration", 0):.2f}s</span>
         </div>
         <div class="details">

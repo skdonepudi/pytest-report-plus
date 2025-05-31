@@ -16,7 +16,7 @@ test_screenshot_paths = {}
 
 import logging
 
-logger = logging.getLogger()  # root logger
+logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 if not logger.handlers:
@@ -105,7 +105,6 @@ def pytest_sessionfinish(session, exitstatus):
         reporter.write_report()
         print(f"✅ Standalone JSON report written to {json_path}")
 
-    # Now generate the HTML report
     script_path = os.path.join(os.path.dirname(__file__), "generate_html_report.py")
 
     if not os.path.exists(script_path):
@@ -141,7 +140,6 @@ def pytest_sessionfinish(session, exitstatus):
 
         print(f"📦 Internal flake run data saved to {output_path}")
 
-        # Pass the path to internal_data_dir to detect_flakes so it knows where to read runs from
         detect_flakes_by_historytrends(runs_dir=internal_data_dir)
     if session.config.getoption("--send-email"):
         print("📬 --send-email enabled. Sending report...")
@@ -209,7 +207,6 @@ def take_screenshot_on_failure(item, page):
     os.makedirs(screenshot_dir, exist_ok=True)
     filename = f"{item.name}.png".replace("/", "_").replace("\\", "_")
     path = os.path.join(screenshot_dir, filename)
-    # Assuming sync call here, adjust if async
     page.screenshot(path=path)
     return path
 
@@ -228,7 +225,6 @@ def configure_logging():
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
 
-    # Avoid adding multiple handlers if rerun in same session
     if not any(isinstance(h, logging.StreamHandler) for h in logger.handlers):
         handler = logging.StreamHandler(sys.stdout)
         handler.setLevel(logging.INFO)
@@ -238,7 +234,7 @@ def configure_logging():
 
 def pytest_configure(config):
     global _saved_config
-    _saved_config = config  # store it for use in collectreport
+    _saved_config = config
 
     INTERNAL_JSON_DIR = Path(".pytest_worker_jsons")
     report_path = config.getoption("--json-report") or "playwright_report.json"
@@ -280,7 +276,6 @@ from collections import defaultdict
 
 
 def detect_flakes_by_historytrends(runs_dir: Path):
-    # Read run files from the internal library folder
     run_files = sorted(runs_dir.glob("*.json"))
 
     test_status_map = defaultdict(list)
@@ -311,7 +306,6 @@ def detect_flakes_by_historytrends(runs_dir: Path):
                 "last_failed": last_failed_entry["timestamp"]
             }
 
-    # Write output JSON and HTML report to the client's project folder `flake_data/`
     client_output_dir = Path("report_output")  # relative to cwd (client's project)
     client_output_dir.mkdir(parents=True, exist_ok=True)
 

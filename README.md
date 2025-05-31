@@ -33,6 +33,7 @@ A powerful, plug-and-play Pytest plugin to generate **HTML + JSON reports**, det
 🔗 Enhance your test reports by embedding clickable links directly beside each test: 
 Effortlessly jump to related tickets, documentation, or external tools right from your pytest reporter plus!
 
+
 ---
 
 ##  Why use pytest-reporter-plus?
