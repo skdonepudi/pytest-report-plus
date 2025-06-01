@@ -193,6 +193,22 @@ class JSONReporter:
         }}
         filterByMarkers(); // Reapply marker filter
       }}
+      function initializeUniversalSearch() {{
+    const searchInput = document.getElementById('universal-search');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function (e) {{
+        const filter = e.target.value.toLowerCase();
+        document.querySelectorAll('.test-card').forEach(card => {{
+            const name = card.getAttribute('data-name') || '';
+            const link = card.getAttribute('data-link') || '';
+            const isVisible = name.toLowerCase().includes(filter) || link.toLowerCase().includes(filter);
+            card.style.display = isVisible ? '' : 'none';
+        }});
+    }});
+}}
+
+document.addEventListener('DOMContentLoaded', initializeUniversalSearch);
 
       function filterByMarkers() {{
   const selected = Array.from(document.querySelectorAll('.marker-filter input[type="checkbox"]:checked')).map(cb => cb.value);
@@ -232,6 +248,15 @@ class JSONReporter:
         Sort by longest running tests
       </label>
     </div>
+    <div class="search-container">
+          <input
+  type="text"
+  id="universal-search"
+  placeholder="🔍 Search by anything, testname? link ids?..."
+  style="width: 100%; padding: 10px; margin-bottom: 20px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px;"
+/>
+    </div>
+
 
     <div id="markersFilter" class="marker-filter" style="margin-bottom: 1rem;">
       <strong>Filter by Markers:</strong><br/>
@@ -279,29 +304,31 @@ class JSONReporter:
                     f'<a href="{url}" target="_blank" '
                     f'style="background:#3498db;color:white;padding:2px 6px;'
                     f'border-radius:3px;font-weight:bold;font-size:0.85em;'
-                    f'text-decoration:none;margin-right:6px;">Link</a>'
+                    f'text-decoration:none;margin-right:6px;"> Link </a>'
                 )
 
             html += f'''
+    
             
 
-      <div class="test" data-markers="{marker_str}">
-        <div class="header {status_class}" onclick="toggleDetails(this)">
-          <span class="toggle"></span>
-          <span><strong>{test["test"]}</strong> — {test["status"].upper()}</span>
-          <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{test["worker"]}</span>
-          <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{flaky_badge}</span>
-          <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{link_html}</span>
-          <span class="timestamp">⏱ {test.get("duration", 0):.2f}s</span>
-        </div>
-        <div class="details">
-          {error_html}
-          {screenshot_html}
-          {stdout_html}
-        {stderr_html}
-        {logs_html}
-        </div>
-      </div>
+      <div class="test test-card" data-name="{test['test']}" data-link="{','.join(test.get('links', []))}" data-markers="{marker_str}">
+  <div class="header {status_class}" onclick="toggleDetails(this)">
+    <span class="toggle"></span>
+    <span><strong>{test["test"]}</strong> — {test["status"].upper()}</span>
+    <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{test["worker"]}</span>
+    <span class="worker-id" style="background: #f39c12; color:white; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{flaky_badge}</span>
+    <span class="worker-id" style="background: #3498db; color:white; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{link_html}</span>
+    <span class="timestamp">⏱ {test.get("duration", 0):.2f}s</span>
+  </div>
+  <div class="details">
+    {error_html}
+    {screenshot_html}
+    {stdout_html}
+    {stderr_html}
+    {logs_html}
+  </div>
+</div>
+
     '''
 
         # Add summary

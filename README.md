@@ -6,32 +6,46 @@ A powerful, plug-and-play Pytest plugin to generate **HTML + JSON reports**, det
 
 ## ✨ Features
 
-🧩 Unified Test Reports: Get a single, easy-to-read HTML report summarizing all your test results — no hassle, just clarity.
+#### 🧩 Unified Test Reports: Get a single, easy-to-read HTML report summarizing all your test results — no hassle, just clarity.
 
-🔄 Flaky Test Detection: Automatically flags flaky tests so you can spot and fix inconsistent failures quickly.
+#### 🔄 Flaky Test Detection: Automatically flags flaky tests so you can spot and fix inconsistent failures quickly.
 
 ![Screenshot 2025-05-28 at 3 43 17 PM](https://github.com/user-attachments/assets/6fd7a419-58c1-4651-96f7-093ced1f02ee)
 
-📸 Screenshot Support: View screenshots directly in the report to understand failures faster.
+#### 📸 Screenshot Support: View screenshots directly in the report to understand failures faster.
 
-📝 Comprehensive output capture: All your test logs with loggers, print() statements, and screenshots are automatically captured and embedded in the report...
+#### 📝 Comprehensive output capture: All your test logs with loggers, print() statements, and screenshots are automatically captured and embedded in the report...
 
 ![ezgif-744a5d34a4c46d](https://github.com/user-attachments/assets/209cd2c0-d33b-48ec-b58b-8c8991ce35be)
 
-📧 Email Test Reports: Send your reports via email effortlessly using SendGrid integration.
+#### 📧 Email Test Reports: Send your reports via email effortlessly using SendGrid integration.
 
 ![Screenshot 2025-05-28 at 4 38 49 PM](https://github.com/user-attachments/assets/3f40e206-5dfd-45e9-a511-4dd206cf3318)
 
-🐢 Spot Slow Tests: Highlights the slowest tests so you know where to optimize your suite.
+#### 🐢 Spot Slow Tests: Highlights the slowest tests so you know where to optimize your suite.
 
 ![ezgif-64896277dcf8f8](https://github.com/user-attachments/assets/f5616a07-0dd9-40ed-aa9a-cf9adee3a0b8)
 
-⏱️ Sort & Filter: Easily sort tests by duration or filter by custom tags and skip status to focus on what matters.
+#### ⏱️ Sort & Filter: Easily sort tests by duration or filter by custom tags and skip status to focus on what matters.
 
 ![ezgif-3056394be0e9a4](https://github.com/user-attachments/assets/bb60c50a-4709-42f3-8571-19cbd76a93cf)
 
-🔗 Enhance your test reports by embedding clickable links directly beside each test: 
-Effortlessly jump to related tickets, documentation, or external tools right from your pytest reporter plus!
+#### 🔍 Universal Test Search + Smart Link Navigation
+
+Whether you're trying to trace coverage or track unlinked test cases — this search has your back!
+
+Just start typing, and the dashboard will instantly filter tests by: 
+
+✅ Test name
+
+✅ Linked issue/documentation IDs (like JIRA, Testmo, Notion, etc.)
+
+✅ Custom URLs or keywords present in the links
+
+
+![Screen Recording 2025-06-01 at 2 48 08 PM](https://github.com/user-attachments/assets/057441ac-06a3-421f-aafc-915968a90463)
+
+
 
 
 ---
