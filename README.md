@@ -43,9 +43,7 @@ Just start typing, and the dashboard will instantly filter tests by:
 ✅ Custom URLs or keywords present in the links
 
 
-
-
-
+![Screen Recording 2025-06-01 at 2 48 08 PM](https://github.com/user-attachments/assets/057441ac-06a3-421f-aafc-915968a90463)
 
 
 
