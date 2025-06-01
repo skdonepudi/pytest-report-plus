@@ -10,3 +10,11 @@ def test_show_link():
 @pytest.mark.link("https://jira.company.com/testcase/12345")
 def test_show_multiplelinks():
         assert True
+@pytest.mark.link("https://github.com/reach2jeyan/pytest-reporter-plus/issues/15")
+@pytest.mark.link("https://github.com/reach2jeyan/pytest-reporter-plus/issues/25")
+def test_github_link():
+    assert True
+
+@pytest.mark.link("https://github.com/reach2jeyan/pytest-reporter-plus/issues/25")
+def test_github_link_another_case():
+    assert True
