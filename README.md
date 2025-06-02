@@ -71,7 +71,12 @@ poetry add --dev pytest-reporter-plus
 Generate HTML + JSON reports:
 
 ```bash
-pytest -p pytest_reporter_plus.plugin --json-report
+pytest
+```
+If you are running with xdist 
+
+```commandline
+pytest -n numberOfWorkers
 ```
 You’ll get:
 
