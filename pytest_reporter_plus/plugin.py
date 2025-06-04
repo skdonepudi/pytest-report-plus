@@ -89,7 +89,10 @@ def pytest_sessionfinish(session, exitstatus):
     screenshots = session.config.getoption("--screenshots") or "screenshots"
 
     is_worker = os.getenv("PYTEST_XDIST_WORKER") is not None
-    is_xdist =  session.config.getoption("-n")
+    try:
+        is_xdist = bool(session.config.getoption("-n"))
+    except ValueError:
+        is_xdist = False
 
     if is_worker:
         reporter.write_report()

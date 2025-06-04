@@ -18,6 +18,8 @@ COPY . .
 
 RUN ls -R /app
 
+RUN poetry lock
+
 RUN poetry install --with dev
 
 

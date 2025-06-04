@@ -2,6 +2,32 @@
 
 A powerful, plug-and-play Pytest plugin to generate **HTML + JSON reports**, detect **flaky tests**, and optionally **send reports via email**. Works beautifully with or without `xdist`.
 
+
+
+## 🚀 Installation
+
+```bash
+pip install pytest-reporter-plus
+# or with Poetry
+poetry add --dev pytest-reporter-plus
+```
+
+
+## 🧾 Usage
+Generate HTML + JSON reports:
+
+```bash
+pytest
+```
+If you are running with xdist 
+
+```commandline
+pytest -n numberOfWorkers
+```
+You’ll get:
+
+report.html – a clean, styled HTML report
+
 ---
 
 ## ✨ Features
@@ -55,34 +81,6 @@ Stop wasting time writing and maintaining custom pytest reporter hooks like pyte
 With pytest-reporter-plus, you get a beautiful, lightweight HTML report out of the box — no extra coding needed.
 
 Just install, run your tests, and let the plugin handle all the reporting magic. Focus on what matters: writing and running your tests.
-
-
-
-## 🚀 Installation
-
-```bash
-pip install pytest-reporter-plus
-# or with Poetry
-poetry add --dev pytest-reporter-plus
-```
-
-
-## 🧾 Usage
-Generate HTML + JSON reports:
-
-```bash
-pytest
-```
-If you are running with xdist 
-
-```commandline
-pytest -n numberOfWorkers
-```
-You’ll get:
-
-report.html – a clean, styled HTML report
-
-playwright_report.json – structured data for integrations
 
 ## Available Options
 | Option                  | Description                                                        | Default                  | Choices                  |
