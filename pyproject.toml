@@ -1,11 +1,20 @@
 [tool.poetry]
 name = "pytest-reporter-plus"
-version = "0.2.1"
+version = "0.2.2"
 description = "Lightweight enhanced HTML reporter for Pytest"
 readme = "README.md"
 authors = ["Emjey","Karan"]
 license = "MIT"
 packages = [{ include = "pytest_reporter_plus" }]
+keywords = [
+  "html",
+  "pytest",
+  "report",
+]
+
+urls.Homepage = "https://github.com/reach2jeyan/pytest-report-plus"
+urls.Source = "https://github.com/reach2jeyan/pytest-report-plus"
+urls.Tracker = "https://github.com/reach2jeyan/pytest-report-plus/issues"
 
 [tool.poetry.dependencies]
 python = ">=3.9"
