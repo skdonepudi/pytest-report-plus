@@ -58,7 +58,12 @@ def pytest_runtest_makereport(item, call):
                     or getattr(item, "page_for_screenshot", None)
             )
             if driver:
-                screenshot_path = take_screenshot_on_failure(item, driver)
+                if tool == "playwright":
+                    screenshot_path = take_screenshot_on_failure(item, driver)
+                elif tool == "selenium":
+                    screenshot_path = take_screenshot_selenium(item, driver)
+                else:
+                    pass
         reporter = config._json_reporter
         worker_id = os.getenv("PYTEST_XDIST_WORKER") or "main"
         reporter.log_result(
@@ -178,7 +183,7 @@ def pytest_addoption(parser):
         "--automation-tool",
         action="store",
         default="playwright",
-        choices=["selenium", "playwright"],
+        choices=["selenium", "playwright", "other"],
         help="Specify automation tool: selenium (default) or playwright"
     )
     parser.addoption(

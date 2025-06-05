@@ -29,6 +29,16 @@ You’ll get:
 report.html – a clean, styled HTML report
 
 ---
+## Available Options
+| Option                  | Description                                                        | Default                  | Choices                          |
+| ----------------------- | ------------------------------------------------------------------ | ------------------------ |----------------------------------|
+| `--json-report`         | Path to save individual JSON test reports                          | `playwright_report.json` | *Any valid file path*            |
+| `--automation-tool`     | Specify automation tool used for testing                           | `playwright`             | `playwright`, `selenium`, `other` |
+| `--capture-screenshots` | When to capture screenshots                                        | `failed`                 | `failed`, `all`, `none`          |
+| `--html-output`         | Directory to output HTML reports                                   | `report_output`          | *Any valid directory*            |
+| `--screenshots`         | Directory where screenshots will be stored                         | `screenshots`            | *Any valid directory*            |
+| `--send-email`          | Send HTML report via email after the test run                      | `False`                  | `True`, `False`                  |
+---
 
 ## ✨ Features
 
@@ -71,27 +81,11 @@ Just start typing, and the dashboard will instantly filter tests by:
 
 ![Screen Recording 2025-06-01 at 2 48 08 PM](https://github.com/user-attachments/assets/057441ac-06a3-421f-aafc-915968a90463)
 
-
-
-
----
-
 ##  Why use pytest-reporter-plus?
 Stop wasting time writing and maintaining custom pytest reporter hooks like pytest_runtest_makereport!
 With pytest-reporter-plus, you get a beautiful, lightweight HTML report out of the box — no extra coding needed.
 
 Just install, run your tests, and let the plugin handle all the reporting magic. Focus on what matters: writing and running your tests.
-
-## Available Options
-| Option                  | Description                                                        | Default                  | Choices                  |
-| ----------------------- | ------------------------------------------------------------------ | ------------------------ | ------------------------ |
-| `--json-report`         | Path to save individual JSON test reports                          | `playwright_report.json` | *Any valid file path*    |
-| `--automation-tool`     | Specify automation tool used for testing                           | `playwright`             | `playwright`, `selenium` |
-| `--capture-screenshots` | When to capture screenshots                                        | `failed`                 | `failed`, `all`, `none`  |
-| `--html-output`         | Directory to output HTML reports                                   | `report_output`          | *Any valid directory*    |
-| `--screenshots`         | Directory where screenshots will be stored                         | `screenshots`            | *Any valid directory*    |
-| `--send-email`          | Send HTML report via email after the test run                      | `False`                  | `True`, `False`          |
-| `--detect-flake`        | Detect flaky tests based on reruns in the current or last few runs | `False`                  | `True`, `False`          |
 
 
 ## 🔁 Flaky Test Detection
@@ -103,9 +97,8 @@ In the HTML report, you’ll see a badge like:
 
 
 ## 📧 Email Report (Optional)
-Send the HTML report via email using --send-email.
+Send the HTML report via email using --send-email. Please note you will need your own sendgrid setup to use this feature
 
-### Setup Environment Variables
 Create an emailenv file in your project folder that has the following
 
 ```commandline
