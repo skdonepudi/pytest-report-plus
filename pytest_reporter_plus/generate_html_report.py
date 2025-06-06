@@ -306,32 +306,23 @@ document.addEventListener('DOMContentLoaded', initializeUniversalSearch);
                     'style="background:#f39c12;color:white;padding:2px 6px;'
                     'border-radius:3px;font-weight:bold;font-size:0.85em;">FLAKY</span>'
                 )
-            link_html = ""
-            for url in test.get("links", []):
-                link_html += (
-                    f'<a href="{url}" target="_blank" '
-                    f'style="background:#3498db;color:white;padding:2px 6px;'
-                    f'border-radius:3px;font-weight:bold;font-size:0.85em;'
-                    f'text-decoration:none;margin-right:6px;"> Link </a>'
-                )
 
-            html += f'''
-    
-            
+            links = test.get("links", [])
 
-      <div class="test test-card" data-name="{test['test']}" data-link="{','.join(test.get('links', []))}" data-markers="{marker_str}">
-  <div class="header {status_class}" onclick="toggleDetails(this)">
-    <span class="toggle"></span>
-    
-    <span>
-      <strong>{test["test"]}</strong> — {test["status"].upper()}
-    </span>
-    
-  <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
-  <code style="font-size: 0.6em; color: #555;">{test["nodeid"]}</code>
-  <button class="copy-btn"
-          onclick="event.stopPropagation(); copyToClipboard('{test["nodeid"]}')"
-          title="Copy full test path"
+            if links:
+                link_html = ""
+                for url in links:
+                    link_html += (
+                        f'<a href="{url}" target="_blank" '
+                        f'style="background:#3498db;color:white;padding:2px 6px;'
+                        f'border-radius:3px;font-weight:bold;font-size:0.85em;'
+                        f'text-decoration:none;margin-right:6px;"> Link </a>'
+                    )
+            else:
+                link_html = """
+                <button class="info-btn"
+          title="You can tag your tests with markers such as pytest.mark.link. Other supported markers include testcase, jira, issue, and ticket."
+          onclick="event.stopPropagation();"
           style="
             cursor: pointer;
             background: none;
@@ -340,9 +331,35 @@ document.addEventListener('DOMContentLoaded', initializeUniversalSearch);
             padding: 0;
             line-height: 1;
           ">
-    📋
+    ℹ️
   </button>
-</span>
+                """
+
+            html += f'''
+    
+<div class="test test-card" data-name="{test['test']}" data-link="{','.join(test.get('links', []))}" data-markers="{marker_str}">
+  <div class="header {status_class}" onclick="toggleDetails(this)">
+    <span class="toggle"></span>
+    <span>
+      <strong>{test["test"]}</strong> — {test["status"].upper()}
+    </span>
+    
+    <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
+      <code style="font-size: 0.6em; color: #555;">{test["nodeid"]}</code>
+      <button class="copy-btn"
+              onclick="event.stopPropagation(); copyToClipboard('{test["nodeid"]}')"
+              title="Copy full test path"
+              style="
+                cursor: pointer;
+                background: none;
+                border: none;
+                font-size: 1.2em;
+                padding: 0;
+                line-height: 1;
+              ">
+        📋
+      </button>
+    </span>
 
     <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{test["worker"]}</span>
     <span class="worker-id" style="background: #f39c12; color:white; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{flaky_badge}</span>
@@ -350,6 +367,7 @@ document.addEventListener('DOMContentLoaded', initializeUniversalSearch);
     <span class="timestamp">⏱ {test.get("duration", 0):.2f}s</span>
   </div>
 
+  <div class="details">
     {error_html}
     {screenshot_html}
     {stdout_html}
@@ -386,6 +404,7 @@ document.addEventListener('DOMContentLoaded', initializeUniversalSearch);
         output_file = os.path.join(self.output_dir, "report.html")
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(html)
+
 
 if __name__ == "__main__":
     main()

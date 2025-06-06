@@ -22,5 +22,7 @@ RUN poetry lock
 
 RUN poetry install --with dev
 
+RUN poetry run playwright install --with-deps
+
 
 
