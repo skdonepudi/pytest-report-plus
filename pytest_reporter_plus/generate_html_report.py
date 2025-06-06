@@ -157,6 +157,14 @@ class JSONReporter:
         const details = headerElem.nextElementSibling;
         details.style.display = (details.style.display === 'block') ? 'none' : 'block';
       }}
+      function copyToClipboard(text) {{
+  navigator.clipboard.writeText(text).then(() => {{
+    console.log("Copied: " + text);
+  }}).catch((err) => {{
+    console.error("Copy failed", err);
+  }});
+}}
+
 
       function toggleFilter(longestCheckbox) {{
         const failedCheckbox = document.getElementById('failedOnlyCheckbox');
@@ -314,13 +322,34 @@ document.addEventListener('DOMContentLoaded', initializeUniversalSearch);
       <div class="test test-card" data-name="{test['test']}" data-link="{','.join(test.get('links', []))}" data-markers="{marker_str}">
   <div class="header {status_class}" onclick="toggleDetails(this)">
     <span class="toggle"></span>
-    <span><strong>{test["test"]}</strong> — {test["status"].upper()}</span>
+    
+    <span>
+      <strong>{test["test"]}</strong> — {test["status"].upper()}
+    </span>
+    
+  <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
+  <code style="font-size: 0.6em; color: #555;">{test["nodeid"]}</code>
+  <button class="copy-btn"
+          onclick="event.stopPropagation(); copyToClipboard('{test["nodeid"]}')"
+          title="Copy full test path"
+          style="
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            padding: 0;
+            line-height: 1;
+          ">
+    📋
+  </button>
+</span>
+
     <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{test["worker"]}</span>
     <span class="worker-id" style="background: #f39c12; color:white; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{flaky_badge}</span>
     <span class="worker-id" style="background: #3498db; color:white; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">{link_html}</span>
     <span class="timestamp">⏱ {test.get("duration", 0):.2f}s</span>
   </div>
-  <div class="details">
+
     {error_html}
     {screenshot_html}
     {stdout_html}
