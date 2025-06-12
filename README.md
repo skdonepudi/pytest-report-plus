@@ -1,8 +1,7 @@
-# 🧪 pytest-reporter-plus
+# 🧪 pytest-reporter-plus [![PyPI Downloads](https://static.pepy.tech/badge/pytest-reporter-plus)](https://pepy.tech/projects/pytest-reporter-plus)
 
-A powerful, plug-and-play Pytest plugin to generate **HTML + JSON reports**, detect **flaky tests**, and optionally **send reports via email**. Works beautifully with or without `xdist`.
-
-
+A powerful, plug-and-play Pytest plugin to generate **HTML + JSON reports**, detect **flaky tests**, and optionally *
+*send reports via email**. Works beautifully with or without `xdist`.
 
 ## 🚀 Installation
 
@@ -12,32 +11,37 @@ pip install pytest-reporter-plus
 poetry add --dev pytest-reporter-plus
 ```
 
-
 ## 🧾 Usage
+
 Generate HTML + JSON reports:
 
 ```bash
 pytest
 ```
-If you are running with xdist 
+
+If you are running with xdist
 
 ```commandline
 pytest -n numberOfWorkers
 ```
+
 You’ll get:
 
 report.html – a clean, styled HTML report
 
 ---
+
 ## Available Options
-| Option                  | Description                                                        | Default                  | Choices                          |
-| ----------------------- | ------------------------------------------------------------------ | ------------------------ |----------------------------------|
-| `--json-report`         | Path to save individual JSON test reports                          | `playwright_report.json` | *Any valid file path*            |
-| `--automation-tool`     | Specify automation tool used for testing                           | `playwright`             | `playwright`, `selenium`, `other` |
-| `--capture-screenshots` | When to capture screenshots                                        | `failed`                 | `failed`, `all`, `none`          |
-| `--html-output`         | Directory to output HTML reports                                   | `report_output`          | *Any valid directory*            |
-| `--screenshots`         | Directory where screenshots will be stored                         | `screenshots`            | *Any valid directory*            |
-| `--send-email`          | Send HTML report via email after the test run                      | `False`                  | `True`, `False`                  |
+
+| Option                  | Description                                   | Default                  | Choices                           |
+|-------------------------|-----------------------------------------------|--------------------------|-----------------------------------|
+| `--json-report`         | Path to save individual JSON test reports     | `playwright_report.json` | *Any valid file path*             |
+| `--automation-tool`     | Specify automation tool used for testing      | `playwright`             | `playwright`, `selenium`, `other` |
+| `--capture-screenshots` | When to capture screenshots                   | `failed`                 | `failed`, `all`, `none`           |
+| `--html-output`         | Directory to output HTML reports              | `report_output`          | *Any valid directory*             |
+| `--screenshots`         | Directory where screenshots will be stored    | `screenshots`            | *Any valid directory*             |
+| `--send-email`          | Send HTML report via email after the test run | `False`                  | `True`, `False`                   |
+
 ---
 
 ## ✨ Features
@@ -70,7 +74,7 @@ report.html – a clean, styled HTML report
 
 Whether you're trying to trace coverage or track unlinked test cases — this search has your back!
 
-Just start typing, and the dashboard will instantly filter tests by: 
+Just start typing, and the dashboard will instantly filter tests by:
 
 ✅ Test name
 
@@ -78,25 +82,26 @@ Just start typing, and the dashboard will instantly filter tests by:
 
 ✅ Custom URLs or keywords present in the links
 
-
 ![Screen Recording 2025-06-01 at 2 48 08 PM](https://github.com/user-attachments/assets/057441ac-06a3-421f-aafc-915968a90463)
 
-##  Why use pytest-reporter-plus?
+## Why use pytest-reporter-plus?
+
 Stop wasting time writing and maintaining custom pytest reporter hooks like pytest_runtest_makereport!
 With pytest-reporter-plus, you get a beautiful, lightweight HTML report out of the box — no extra coding needed.
 
-Just install, run your tests, and let the plugin handle all the reporting magic. Focus on what matters: writing and running your tests.
-
+Just install, run your tests, and let the plugin handle all the reporting magic. Focus on what matters: writing and
+running your tests.
 
 ## 🔁 Flaky Test Detection
+
 If a test is retried multiple times (e.g. due to a --reruns plugin), the report will flag it as FLAKY.
 
 In the HTML report, you’ll see a badge like:
 
 ![Screenshot 2025-05-28 at 3 43 17 PM](https://github.com/user-attachments/assets/6fd7a419-58c1-4651-96f7-093ced1f02ee)
 
-
 ## 📧 Email Report (Optional)
+
 Send the HTML report via email using --send-email. Please note you will need your own sendgrid setup to use this feature
 
 Create an emailenv file in your project folder that has the following
@@ -113,24 +118,27 @@ email_password=your_sendgrid_api_key
 ```
 
 ## Run
+
 ```commandline
 pytest --send-email
 ```
 
 ## 🤝 Contributions
+
 PRs, issues, and feature requests are welcome! Let's make this tool more awesome together.
 
 ### Setting up the project is pretty simple
+
 ```
 docker build -t pytest-reporter-plus .
 docker run -it pytest-reporter-plus /bin/bash 
 ```
 
 ## 📛 Naming
+
 Why pytest-reporter-plus?
 
 Because it does more than just reporting – it’s your enhanced test summary companion ✨
-
 
 ## 📜 License
 
