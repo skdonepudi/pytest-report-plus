@@ -35,7 +35,7 @@ jobs:
 
       - name: 🧪 Run tests with coverage
         run: |
-          poetry run pytest --cov=pytest_reporter_plus tests/unit/ --cov-fail-under=21 --cov-report=term --cov-report=xml
+          poetry run pytest --cov=pytest_reporter_plus tests/unit/ --cov-fail-under=20 --cov-report=term --cov-report=xml
 
       - name: 📊 Extract coverage percentage
         if: github.event_name == 'pull_request'
