@@ -1,10 +1,11 @@
-import os
 import json
+import os
 from collections import defaultdict
+
 
 def merge_json_reports(directory=".pytest_worker_jsons", output_path="playwright_report.json"):
     all_tests = []
-    for filename in os.listdir(directory):
+    for filename in sorted(os.listdir(directory)):
         if filename.endswith(".json"):
             filepath = os.path.join(directory, filename)
             with open(filepath) as f:
