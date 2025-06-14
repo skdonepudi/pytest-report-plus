@@ -35,21 +35,19 @@ jobs:
         run: |
           poetry run pytest --cov=pytest_reporter_plus tests/unit/ --cov-fail-under=20 --cov-report=term
 
-      - name: 📊 Extract test coverage
+      - name: 🧪 Run tests and capture coverage
+        id: run-tests
         run: |
-          COVERAGE=$(pytest --cov=pytest_reporter_plus tests/unit/ --cov-report=term | grep TOTAL | awk '{print $4}')
-          echo "Coverage: $COVERAGE"
+          COVERAGE=$(poetry run pytest --cov=pytest_reporter_plus tests/unit/ --cov-report=term | grep TOTAL | awk '{print $4}')
           echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
 
-      - name: 💬 Comment coverage on PR
-        if: github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          message: |
-            🧪 **Test Coverage**
-            ```
-            Coverage: ${{ env.COVERAGE }}
-            ```
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+          - name: 💬 Post coverage comment
+            uses: marocchino/sticky-pull-request-comment@v2
+            with:
+              header: coverage
+              message: |
+                ✅ **Test Coverage Report** for `${{ matrix.python-version }}`
+                ```
+                Coverage: ${{ env.COVERAGE }}
+                ```
+
