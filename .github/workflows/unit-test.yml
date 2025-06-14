@@ -31,26 +31,8 @@ jobs:
           poetry lock
           poetry install --with dev
 
-      - name: 🧪 Run tests and collect coverage output
-        id: test
+      - name: 🧪 Run tests with coverage
         run: |
-          echo "Running tests..."
-          OUTPUT=$(poetry run pytest --cov=pytest_reporter_plus tests/unit/ --cov-report=term)
-
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          {
-            echo "COVERAGE_REPORT<<$EOF"
-            echo "$OUTPUT"
-            echo "$EOF"
-          } >> "$GITHUB_ENV"
-
-      - name: 💬 Comment full test output
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: test-output
-          message: |
-            🧪 **Unit Test & Coverage Report**
-            ```
-            ${{ env.COVERAGE_REPORT }}
-            ```
+          poetry run pytest --cov=pytest_reporter_plus tests/unit/ --cov-fail-under=20 --cov-report=term
+          
 
