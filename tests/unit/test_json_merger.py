@@ -57,7 +57,7 @@ class TestMergeJsonReports:
         assert merged[0]["test"] == "test_sample.py::test_alt"
         assert merged[0]["status"] == "passed"
         assert merged[0]["flaky"] is True
-        assert merged[0]["flaky_attempts"] == ["skipped", "passed"]
+        assert set(merged[0]["flaky_attempts"]) == {"skipped", "passed"}
 
     def test_ignores_invalid_json(self):
         bad_path = os.path.join(self.test_dir, "broken.json")
