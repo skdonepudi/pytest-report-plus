@@ -1,18 +1,15 @@
 import shutil
-from datetime import datetime
 from pathlib import Path
 
 import pytest
 
 from pytest_reporter_plus.extract_link import extract_links_from_item
-from pytest_reporter_plus.generate_flakytest_report import generate_flaky_html
 from pytest_reporter_plus.generate_html_report import JSONReporter
 from pytest_reporter_plus.json_merge import merge_json_reports
 from pytest_reporter_plus.send_email_report import send_email_from_env, load_email_env
 
 python_executable = shutil.which("python3") or shutil.which("python")
 test_screenshot_paths = {}
-
 
 import logging
 
@@ -31,6 +28,7 @@ def pytest_runtest_setup(item):
     if "caplog" not in item.fixturenames:
         item.fixturenames.append("caplog")
 
+
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield
@@ -48,8 +46,8 @@ def pytest_runtest_makereport(item, call):
 
         screenshot_path = None
         should_capture_screenshot = (
-            capture_option == "all" or
-            (capture_option == "failed" and report.outcome == "failed")
+                capture_option == "all" or
+                (capture_option == "failed" and report.outcome == "failed")
         )
 
         if should_capture_screenshot:
@@ -80,8 +78,9 @@ def pytest_runtest_makereport(item, call):
             screenshot=screenshot_path,
             logs=caplog_text,
             worker=worker_id,
-            links = extract_links_from_item(item)
+            links=extract_links_from_item(item)
         )
+
 
 import subprocess
 
@@ -131,24 +130,6 @@ def pytest_sessionfinish(session, exitstatus):
     except Exception as e:
         print(f"❌ Exception during HTML report generation: {e}")
 
-    if session.config.getoption("--detect-flake"):
-        report_path = session.config.getoption("--json-report")
-        with open(report_path, "r") as f:
-            full_report = json.load(f)
-
-        timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")
-
-        lib_root = Path(__file__).resolve().parent
-        internal_data_dir = lib_root / "flake_run_data" / "runs"
-        internal_data_dir.mkdir(parents=True, exist_ok=True)
-
-        output_path = internal_data_dir / f"{timestamp}.json"
-        with open(output_path, "w") as f:
-            json.dump(full_report, f, indent=2)
-
-        print(f"📦 Internal flake run data saved to {output_path}")
-
-        detect_flakes_by_historytrends(runs_dir=internal_data_dir)
     if session.config.getoption("--send-email"):
         print("📬 --send-email enabled. Sending report...")
         try:
@@ -165,12 +146,15 @@ def pytest_sessionstart(session):
         "markers", "link(url): Add a link to external test case or documentation."
     )
 
+
 def pytest_runtest_logreport(report):
     print(f"pytest_runtest_logreport: {report.nodeid} - {report.outcome}")
+
 
 def pytest_load_initial_conftests(args):
     if not any(arg.startswith("--capture") for arg in args):
         args.append("--capture=tee-sys")
+
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -218,6 +202,7 @@ def take_screenshot_on_failure(item, page):
     page.screenshot(path=path)
     return path
 
+
 def take_screenshot_selenium(item, driver):
     screenshot_dir = os.path.join(os.getcwd(), "screenshots")
     os.makedirs(screenshot_dir, exist_ok=True)
@@ -226,8 +211,10 @@ def take_screenshot_selenium(item, driver):
     driver.save_screenshot(path)
     return path
 
+
 import logging
 import sys
+
 
 def configure_logging():
     logger = logging.getLogger()
@@ -239,6 +226,7 @@ def configure_logging():
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         logger.addHandler(handler)
+
 
 def pytest_configure(config):
     global _saved_config
@@ -279,53 +267,7 @@ def pytest_collectreport(report):
 
 
 import os
-import json
-from collections import defaultdict
 
-
-def detect_flakes_by_historytrends(runs_dir: Path):
-    run_files = sorted(runs_dir.glob("*.json"))
-
-    test_status_map = defaultdict(list)
-
-    for run_file in run_files:
-        with open(run_file) as f:
-            run_data = json.load(f)
-            for test in run_data:
-                test_id = test["nodeid"]
-                test_status_map[test_id].append({
-                    "status": test["status"],
-                    "timestamp": test["timestamp"]
-                })
-
-    flaky_tests = {}
-
-    for test_id, history in test_status_map.items():
-        statuses = [entry["status"] for entry in history]
-        status_set = set(statuses)
-
-        if len(status_set) > 1 and 'passed' in status_set and 'failed' in status_set:
-            last_failed_entry = max(
-                (entry for entry in history if entry["status"] == "failed"),
-                key=lambda x: x["timestamp"]
-            )
-            flaky_tests[test_id] = {
-                "statuses": statuses,
-                "last_failed": last_failed_entry["timestamp"]
-            }
-
-    client_output_dir = Path("report_output")  # relative to cwd (client's project)
-    client_output_dir.mkdir(parents=True, exist_ok=True)
-
-    flake_json_path = client_output_dir / "flake_report.json"
-    flake_html_path = client_output_dir / "flake_report.html"
-
-    with open(flake_json_path, "w") as f:
-        json.dump(flaky_tests, f, indent=2)
-    print(f"🌀 Flake summary JSON → {flake_json_path}")
-
-    generate_flaky_html(flake_summary=flaky_tests, output_html_path=flake_html_path)
-    print(f"🌐 Flake report HTML → {flake_html_path}")
 
 def mark_flaky_tests(results):
     # Group test attempts by nodeid
