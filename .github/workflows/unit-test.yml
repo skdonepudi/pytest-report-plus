@@ -28,9 +28,6 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Print Error Logs
-        run: cat /home/runner/work/pytest-report-plus/pytest-report-plus/poetry-installer-error-dhe7u1lf.log
-
       - name: 📦 Install dependencies with Poetry
         run: |
           poetry install --with dev
