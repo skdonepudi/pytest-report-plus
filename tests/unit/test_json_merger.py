@@ -36,12 +36,11 @@ class TestMergeJsonReports:
         print(merged)
         assert len(merged) == 1
         assert merged[0]["nodeid"] == "test_sample.py::test_case"
-        assert merged[0]["status"] in ["passed", "failed"]  # if order isn't guaranteed
+        assert merged[0]["status"] in ["passed", "failed"]
         assert set(merged[0]["flaky_attempts"]) == {"passed", "failed"}
         assert merged[0]["flaky"] is True
 
     def test_fallback_to_test_key(self):
-        # If only "test" key is present (not "nodeid"), it should still group correctly
         data1 = [{"test": "test_sample.py::test_alt", "status": "skipped"}]
         data2 = [{"test": "test_sample.py::test_alt", "status": "passed"}]
 
@@ -61,12 +60,10 @@ class TestMergeJsonReports:
         assert merged[0]["flaky_attempts"] == ["skipped", "passed"]
 
     def test_ignores_invalid_json(self):
-        # Write a corrupt file
         bad_path = os.path.join(self.test_dir, "broken.json")
         with open(bad_path, "w") as f:
             f.write("{ not valid json")
 
-        # Write a valid file
         good_data = [{"nodeid": "test_x.py::test_y", "status": "passed"}]
         self._write_json("good.json", good_data)
 
