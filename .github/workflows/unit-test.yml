@@ -1,8 +1,6 @@
 name: Unit Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -35,13 +33,12 @@ jobs:
 
       - name: 🧪 Run tests with coverage
         run: |
-          poetry run pytest --cov=pytest_reporter_plus tests/unit/ --cov-fail-under=20 --cov-report=term --cov-report=xml
+          poetry run pytest --cov=pytest_reporter_plus tests/unit/ --cov-fail-under=20 --cov-report=term
 
-      - name: 📊 Extract coverage percentage
-        if: github.event_name == 'pull_request'
+      - name: 📊 Extract test coverage
         run: |
-          COVERAGE=$(coverage report | grep TOTAL | awk '{print $4}')
-          echo "Coverage is $COVERAGE"
+          COVERAGE=$(pytest --cov=pytest_reporter_plus tests/unit/ --cov-report=term | grep TOTAL | awk '{print $4}')
+          echo "Coverage: $COVERAGE"
           echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
 
       - name: 💬 Comment coverage on PR
@@ -51,6 +48,8 @@ jobs:
           message: |
             🧪 **Test Coverage**
             ```
-            ${{ env.COVERAGE }}
+            Coverage: ${{ env.COVERAGE }}
             ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
