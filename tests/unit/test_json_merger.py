@@ -75,3 +75,40 @@ class TestMergeJsonReports:
 
         assert len(merged) == 1
         assert merged[0]["status"] == "passed"
+
+    def test_non_flaky_test(self):
+        data = [{"nodeid": "test_sample.py::test_stable", "status": "passed"}]
+
+        self._write_json("single.json", data)
+
+        output_path = os.path.join(self.test_dir, "merged_single.json")
+        merge_json_reports(directory=self.test_dir, output_path=output_path)
+
+        with open(output_path) as f:
+            merged = json.load(f)
+
+        assert len(merged) == 1
+        assert merged[0]["nodeid"] == "test_sample.py::test_stable"
+        assert merged[0]["status"] == "passed"
+        assert merged[0]["flaky"] is False
+        assert merged[0]["flaky_attempts"] == ["passed"]
+
+    def test_flaky_status_detection(self):
+        # Test was first skipped, then passed
+        data1 = [{"nodeid": "test_sample.py::test_flaky", "status": "skipped"}]
+        data2 = [{"nodeid": "test_sample.py::test_flaky", "status": "passed"}]
+
+        self._write_json("first.json", data1)
+        self._write_json("second.json", data2)
+
+        output_path = os.path.join(self.test_dir, "merged_flaky.json")
+        merge_json_reports(directory=self.test_dir, output_path=output_path)
+
+        with open(output_path) as f:
+            merged = json.load(f)
+
+        assert len(merged) == 1
+        assert merged[0]["nodeid"] == "test_sample.py::test_flaky"
+        assert merged[0]["status"] == "passed"  # final attempt
+        assert merged[0]["flaky"] is True
+        assert merged[0]["flaky_attempts"] == ["skipped", "passed"]
