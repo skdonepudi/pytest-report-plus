@@ -132,6 +132,7 @@ class JSONReporter:
     <html lang="en">
     <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {{ font-family: Arial, sans-serif; padding: 1rem; background: #f9f9f9; }}
       .test {{ border: 1px solid #ddd; margin-bottom: 0.5rem; border-radius: 5px; background: white; }}
@@ -139,12 +140,48 @@ class JSONReporter:
       .header.passed {{ background: #e6f4ea; color: #2f7a33; }}
       .header.failed {{ background: #fdecea; color: #a83232; }}
       .header.skipped {{  background: #fff8e1; color: #b36b00;  }}
-       .header.error {{  background: #f0f0f0; color: #f0f0f0;  }}
+      .header.error {{  background: #f0f0f0; color: #f0f0f0;  }}
       .details {{ padding: 0.5rem 1rem; display: none; border-top: 1px solid #ddd; }}
       .toggle::before {{ content: "▶"; display: inline-block; margin-right: 0.5rem; transition: transform 0.3s ease; }}
       .header.expanded .toggle::before {{ transform: rotate(90deg); }}
-      img {{ max-width: 100%; margin-top: 0.5rem; border: 1px solid #ccc; border-radius: 3px; }}
-      .checkbox-container {{ margin-bottom: 1rem; }}
+      .checkbox-container {{ margin-bottom: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }}
+      .details-content {{ display: flex; gap: 1rem; align-items: flex-start; }}
+      .details-text {{ flex: 1; min-width: 0; }}
+      .details-screenshot {{ flex-shrink: 0; margin: 1rem; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1); }}
+      .details-screenshot img {{width: 300px; height: 200px; object-fit: contain; border: 1px solid #ccc; border-radius: 3px; background: #f8f8f8; cursor: pointer; transition: transform 0.2s ease; transform: scale(1.05); }}
+      .details-screenshot img:hover {{  transform: scale(1.05); }}
+      
+      /* Mobile and tablet responsiveness */
+      @media (max-width: 768px) {{
+        .header {{ flex-direction: column; align-items: stretch; gap: 0.5rem; }}
+        .header-section {{ justify-content: space-between; }}
+        .test-info {{ min-width: auto; }}
+        .meta {{ flex-direction: column; gap: 0.25rem; }}
+        .badges-and-timing {{ justify-content: flex-start; flex-wrap: wrap; }}
+        .badges-and-timing > * {{ margin-left: 0; margin-right: 0.5rem; }}
+        
+        .details-content {{ flex-direction: column; gap: 0.5rem; }}
+        .details-screenshot {{ align-self: center; }}
+        .details-screenshot img {{ width: 100%; max-width: 300px; height: auto; min-height: 150px; }}
+      }}
+      
+      @media (max-width: 480px) {{
+        .header {{ padding: 0.75rem 0.5rem; }}
+        .details {{ padding: 0.5rem; }}
+        .test-info strong {{ font-size: 0.9rem; }}
+        .nodeid-badge code {{ font-size: 0.5em; }}
+        .worker-id {{ font-size: 0.75em; }}
+        .timestamp {{ font-size: 0.85em; }}
+        
+        .details-screenshot img {{ max-width: 100%; height: auto; min-height: 120px; }}
+        
+        .checkbox-container {{ flex-direction: column; gap: 0.5rem; }}
+        .checkbox-container label {{ margin-left: 0 !important; }}
+      }}
+      .details-screenshot img.fullscreen {{ position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1); width: auto; height: auto; max-width: 90vw; max-height: 90vh; z-index: 1000; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border-radius: 8px; }}
+      .fullscreen-overlay {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 999; display: none; }}  
+      .search-container {{ margin-bottom: 1rem; }}
+      .search-container input {{ box-sizing: border-box; }}
       .header-section {{ display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }}
       .test-info {{ flex: 1; min-width: 200px; word-break: break-word; white-space: normal; }}
       .meta {{ justify-content: flex-start; flex: 1; word-break: break-word; white-space: normal; }}
@@ -152,103 +189,128 @@ class JSONReporter:
       .timestamp {{ white-space: nowrap; font-weight: bold; }}
       .badges-and-timing > * {{ margin-left: 24px; }}
     </style>
+
     <script>
       function toggleDetails(headerElem) {{
         headerElem.classList.toggle('expanded');
         const details = headerElem.nextElementSibling;
         details.style.display = (details.style.display === 'block') ? 'none' : 'block';
       }}
+
       function copyToClipboard(text) {{
-  navigator.clipboard.writeText(text).then(() => {{
-    console.log("Copied: " + text);
-  }}).catch((err) => {{
-    console.error("Copy failed", err);
-  }});
-}}
+        navigator.clipboard.writeText(text).then(() => {{
+          console.log("Copied: " + text);
+        }}).catch((err) => {{
+          console.error("Copy failed", err);
+        }});
+      }}
+
+      function toggleFullscreen(img) {{
+        const overlay = document.getElementById('fullscreen-overlay');
+        if (img.classList.contains('fullscreen')) {{
+          img.classList.remove('fullscreen');
+          overlay.style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }} else {{
+          img.classList.add('fullscreen');
+          overlay.style.display = 'block';
+          document.body.style.overflow = 'hidden';
+        }}
+      }}
+
+      function closeFullscreen() {{
+        const fullscreenImg = document.querySelector('.details-screenshot img.fullscreen');
+        const overlay = document.getElementById('fullscreen-overlay');
+        
+        if (fullscreenImg) {{
+          fullscreenImg.classList.remove('fullscreen');
+          overlay.style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }}
+      }}
 
 
       function toggleFilter(longestCheckbox) {{
-  const failedCheckbox = document.getElementById('failedOnlyCheckbox');
-  const skippedCheckbox = document.getElementById('skippedOnlyCheckbox');
-  const untrackedCheckbox = document.getElementById('untrackedOnlyCheckbox');
-  const flakyCheckbox = document.getElementById('flakyOnlyCheckbox');
-  const testsContainer = document.getElementById('tests-container');
-  const testElements = Array.from(testsContainer.querySelectorAll('.test'));
+        const failedCheckbox = document.getElementById('failedOnlyCheckbox');
+        const skippedCheckbox = document.getElementById('skippedOnlyCheckbox');
+        const untrackedCheckbox = document.getElementById('untrackedOnlyCheckbox');
+        const flakyCheckbox = document.getElementById('flakyOnlyCheckbox');
+        const testsContainer = document.getElementById('tests-container');
+        const testElements = Array.from(testsContainer.querySelectorAll('.test'));
 
-  if (longestCheckbox.checked) {{
-    failedCheckbox.checked = false;
-    skippedCheckbox.checked = false;
-    untrackedCheckbox.checked = false;
-    flakyCheckbox.checked = false;
-    // Re-enable all tests before sorting
-    testElements.forEach(el => el.style.display = 'block');
+        if (longestCheckbox.checked) {{
+          failedCheckbox.checked = false;
+          skippedCheckbox.checked = false;
+          untrackedCheckbox.checked = false;
+          flakyCheckbox.checked = false;
+          // Re-enable all tests before sorting
+          testElements.forEach(el => el.style.display = 'block');
 
-    // Sort and reorder
-    testElements.sort((a, b) => {{
-      const aDuration = parseFloat(
-  a.querySelector('.timestamp').textContent.replace(/[^\d.]/g, '')
-) || 0;
-      const bDuration = parseFloat(b.querySelector('.timestamp').textContent.replace(/[^\d.]/g, '')) || 0;
-      return bDuration - aDuration;
-    }});
+          // Sort and reorder
+          testElements.sort((a, b) => {{
+            const aDuration = parseFloat(
+        a.querySelector('.timestamp').textContent.replace(/[^\d.]/g, '')
+        ) || 0;
+            const bDuration = parseFloat(b.querySelector('.timestamp').textContent.replace(/[^\d.]/g, '')) || 0;
+            return bDuration - aDuration;
+          }});
 
-    testElements.forEach(el => testsContainer.appendChild(el));
-  }}
+          testElements.forEach(el => testsContainer.appendChild(el));
+        }}
 
-  // Reapply marker filter (should now handle failed/skipped too)
-  filterByMarkers();
-}}
+        // Reapply marker filter (should now handle failed/skipped too)
+        filterByMarkers();
+      }}
 
-        function toggleUntrackedOnly(checkbox) {{
-  const testCards = document.querySelectorAll('.test-card');
-  const longestCheckbox = document.getElementById('longestOnlyCheckbox');
-  const skippedCheckbox = document.getElementById('skippedOnlyCheckbox');
-  const failedCheckbox = document.getElementById('failedOnlyCheckbox');
-  const flakyCheckbox = document.getElementById('flakyOnlyCheckbox');
+      function toggleUntrackedOnly(checkbox) {{
+        const testCards = document.querySelectorAll('.test-card');
+        const longestCheckbox = document.getElementById('longestOnlyCheckbox');
+        const skippedCheckbox = document.getElementById('skippedOnlyCheckbox');
+        const failedCheckbox = document.getElementById('failedOnlyCheckbox');
+        const flakyCheckbox = document.getElementById('flakyOnlyCheckbox');
 
-  if (checkbox.checked) {{
-    longestCheckbox.checked = false;
-    skippedCheckbox.checked = false;
-    failedCheckbox.checked = false;
-    flakyCheckbox.checked = false
-    testCards.forEach(card => {{
-      const hasLink = card.querySelector('a[href]');
-      card.style.display = hasLink ? 'none' : 'block';
-    }});
-  }} else {{
-    testCards.forEach(card => {{
-      card.style.display = 'block';
-    }});
-  }}
-}}
+        if (checkbox.checked) {{
+          longestCheckbox.checked = false;
+          skippedCheckbox.checked = false;
+          failedCheckbox.checked = false;
+          flakyCheckbox.checked = false
+          testCards.forEach(card => {{
+            const hasLink = card.querySelector('a[href]');
+            card.style.display = hasLink ? 'none' : 'block';
+          }});
+        }} else {{
+          testCards.forEach(card => {{
+            card.style.display = 'block';
+          }});
+        }}
+      }}
 
-function toggleUntrackedInfo() {{
-  const card = document.getElementById('untrackedInfoCard');
-  card.style.display = card.style.display === 'none' ? 'block' : 'none';
-}}
+      function toggleUntrackedInfo() {{
+        const card = document.getElementById('untrackedInfoCard');
+        card.style.display = card.style.display === 'none' ? 'block' : 'none';
+      }}
 
-function toggleFlakyOnly(checkbox) {{
-    const longestCheckbox = document.getElementById('longestOnlyCheckbox');
-    const untrackedCheckbox = document.getElementById('untrackedOnlyCheckbox');
-    const skippedCheckbox = document.getElementById('skippedOnlyCheckbox');
-    const failedCheckbox = document.getElementById('failedOnlyCheckbox');
-  const testElements = document.querySelectorAll('.test');
-  if (checkbox.checked) {{
-    longestCheckbox.checked = false;
-    skippedCheckbox.checked = false;
-    failedCheckbox.checked = false;
-    untrackedCheckbox.checked = false;
-    testElements.forEach(el => {{
-      const isFlaky = el.querySelector('.is-flaky') !== null;
-      el.style.display = isFlaky ? 'block' : 'none';
-    }});
-  }} else {{
-    testElements.forEach(el => {{
-      el.style.display = 'block';
-    }});
-  }}
-}}
-
+      function toggleFlakyOnly(checkbox) {{
+          const longestCheckbox = document.getElementById('longestOnlyCheckbox');
+          const untrackedCheckbox = document.getElementById('untrackedOnlyCheckbox');
+          const skippedCheckbox = document.getElementById('skippedOnlyCheckbox');
+          const failedCheckbox = document.getElementById('failedOnlyCheckbox');
+        const testElements = document.querySelectorAll('.test');
+        if (checkbox.checked) {{
+          longestCheckbox.checked = false;
+          skippedCheckbox.checked = false;
+          failedCheckbox.checked = false;
+          untrackedCheckbox.checked = false;
+          testElements.forEach(el => {{
+            const isFlaky = el.querySelector('.is-flaky') !== null;
+            el.style.display = isFlaky ? 'block' : 'none';
+          }});
+        }} else {{
+          testElements.forEach(el => {{
+            el.style.display = 'block';
+          }});
+        }}
+      }}
 
       function toggleFailedOnly(failedCheckbox) {{
         const longestCheckbox = document.getElementById('longestOnlyCheckbox');
@@ -271,66 +333,67 @@ function toggleFlakyOnly(checkbox) {{
         }}
         filterByMarkers(); // Reapply marker filter
       }}
+
       function toggleSkippedOnly(skippedCheckbox) {{
-  const longestCheckbox = document.getElementById('longestOnlyCheckbox');
-  const failedCheckbox = document.getElementById('failedOnlyCheckbox');
-  const untrackedCheckbox = document.getElementById('untrackedOnlyCheckbox');
-  const flakyCheckbox = document.getElementById('flakyOnlyCheckbox');
-  const testElements = document.querySelectorAll('.test');
+        const longestCheckbox = document.getElementById('longestOnlyCheckbox');
+        const failedCheckbox = document.getElementById('failedOnlyCheckbox');
+        const untrackedCheckbox = document.getElementById('untrackedOnlyCheckbox');
+        const flakyCheckbox = document.getElementById('flakyOnlyCheckbox');
+        const testElements = document.querySelectorAll('.test');
 
-  if (skippedCheckbox.checked) {{
-    longestCheckbox.checked = false;
-    failedCheckbox.checked = false;
-    untrackedCheckbox.checked = false;
-    flakyCheckbox.checked = false;
-    testElements.forEach(el => {{
-      const header = el.querySelector('.header');
-      const isSkipped = header.classList.contains('skipped');
-      el.style.display = isSkipped ? 'block' : 'none';
-    }});
-  }} else {{
-    testElements.forEach(el => el.style.display = 'block');
-  }}
+        if (skippedCheckbox.checked) {{
+          longestCheckbox.checked = false;
+          failedCheckbox.checked = false;
+          untrackedCheckbox.checked = false;
+          flakyCheckbox.checked = false;
+          testElements.forEach(el => {{
+            const header = el.querySelector('.header');
+            const isSkipped = header.classList.contains('skipped');
+            el.style.display = isSkipped ? 'block' : 'none';
+          }});
+        }} else {{
+          testElements.forEach(el => el.style.display = 'block');
+        }}
 
-  filterByMarkers(); // Reapply marker filter
-}}
+        filterByMarkers(); // Reapply marker filter
+      }}
 
       function initializeUniversalSearch() {{
-    const searchInput = document.getElementById('universal-search');
-    if (!searchInput) return;
+          const searchInput = document.getElementById('universal-search');
+          if (!searchInput) return;
 
-    searchInput.addEventListener('input', function (e) {{
-        const filter = e.target.value.toLowerCase();
-        document.querySelectorAll('.test-card').forEach(card => {{
-            const name = card.getAttribute('data-name') || '';
-            const link = card.getAttribute('data-link') || '';
-            const isVisible = name.toLowerCase().includes(filter) || link.toLowerCase().includes(filter);
-            card.style.display = isVisible ? '' : 'none';
+          searchInput.addEventListener('input', function (e) {{
+              const filter = e.target.value.toLowerCase();
+              document.querySelectorAll('.test-card').forEach(card => {{
+                  const name = card.getAttribute('data-name') || '';
+                  const link = card.getAttribute('data-link') || '';
+                  const isVisible = name.toLowerCase().includes(filter) || link.toLowerCase().includes(filter);
+                  card.style.display = isVisible ? '' : 'none';
+              }});
+          }});
+        }}
+
+      document.addEventListener('DOMContentLoaded', initializeUniversalSearch);
+
+      function filterByMarkers() {{
+        const selected = Array.from(document.querySelectorAll('.marker-filter input[type="checkbox"]:checked')).map(cb => cb.value);
+        const failedOnly = document.getElementById('failedOnlyCheckbox').checked;
+        const skippedOnly = document.getElementById('skippedOnlyCheckbox').checked;
+
+        document.querySelectorAll('.test').forEach(el => {{
+          const header = el.querySelector('.header');
+          const markers = el.getAttribute('data-markers').split(',');
+          const isFailed = header.classList.contains('failed');
+          const isSkipped = header.classList.contains('skipped');
+
+          const showAllMarkers = selected.length === 0;
+          const matchesMarker = showAllMarkers || selected.some(m => markers.includes(m));
+          const matchesFailed = !failedOnly || isFailed;
+          const matchesSkipped = !skippedOnly || isSkipped;
+
+          el.style.display = (matchesMarker && matchesFailed && matchesSkipped) ? 'block' : 'none';
         }});
-    }});
-}}
-
-document.addEventListener('DOMContentLoaded', initializeUniversalSearch);
-
-    function filterByMarkers() {{
-  const selected = Array.from(document.querySelectorAll('.marker-filter input[type="checkbox"]:checked')).map(cb => cb.value);
-  const failedOnly = document.getElementById('failedOnlyCheckbox').checked;
-  const skippedOnly = document.getElementById('skippedOnlyCheckbox').checked;
-
-  document.querySelectorAll('.test').forEach(el => {{
-    const header = el.querySelector('.header');
-    const markers = el.getAttribute('data-markers').split(',');
-    const isFailed = header.classList.contains('failed');
-    const isSkipped = header.classList.contains('skipped');
-
-    const showAllMarkers = selected.length === 0;
-    const matchesMarker = showAllMarkers || selected.some(m => markers.includes(m));
-    const matchesFailed = !failedOnly || isFailed;
-    const matchesSkipped = !skippedOnly || isSkipped;
-
-    el.style.display = (matchesMarker && matchesFailed && matchesSkipped) ? 'block' : 'none';
-  }});
-}}
+      }}
 
 
       window.onload = function() {{
@@ -352,6 +415,7 @@ document.addEventListener('DOMContentLoaded', initializeUniversalSearch);
     </script>
     </head>
     <body>
+    <div id="fullscreen-overlay" class="fullscreen-overlay" onclick="closeFullscreen()"></div>
     <div class="checkbox-container">
       <label>
         <input type="checkbox" id="failedOnlyCheckbox" />
@@ -441,7 +505,7 @@ document.addEventListener('DOMContentLoaded', initializeUniversalSearch);
             )
             error_html = f"<pre>{test.get('error', '')}</pre>" if test.get('error') else ""
             screenshot_path = self.find_screenshot_and_copy(test['test'])
-            screenshot_html = f'<img src="{screenshot_path}" alt="Screenshot">' if screenshot_path else ""
+            screenshot_html = f'<div class="details-screenshot"><img src="{screenshot_path}" alt="Screenshot" onclick="toggleFullscreen(this)"></div>' if screenshot_path else ""
             marker_str = ",".join(test.get("markers", []))
             stdout_html = ""
             if test.get('stdout'):
@@ -517,11 +581,15 @@ document.addEventListener('DOMContentLoaded', initializeUniversalSearch);
   </div>
 
   <div class="details">
-    {error_html}
-    {screenshot_html}
-    {stdout_html}
-    {stderr_html}
-    {logs_html}
+    <div class="details-content">
+      <div class="details-text">
+        {error_html}
+        {stdout_html}
+        {stderr_html}
+        {logs_html}
+      </div>
+      {screenshot_html}
+    </div>
   </div>
 </div>
 
