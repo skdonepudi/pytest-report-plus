@@ -140,8 +140,9 @@ class JSONReporter:
         return None
 
     def generate_copy_button(self, content, label):
+        escaped_text = json.dumps(content)
         return f"""
-        <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`{content}`)" title="Copy {label}">
+        <button class="inline-copy-btn" onclick='event.stopPropagation(); copyRawText({escaped_text})' title="Copy {label}">
             ⧉
         </button>
         """
@@ -600,14 +601,11 @@ class JSONReporter:
                 <pre>{test['trace']}</pre></div>
                 """
 
-
             error_html = ""
-            error_text = test.get("error", "")
-            if error_text:
-                error_escaped = error_text.replace("`", "\\`")
+            if test.get('error'):
                 error_html = f"""
-                <div><strong>Error:</strong> {self.generate_copy_button(error_escaped, 'error')}
-                <pre style='color: red;'>{error_text}</pre></div>
+                <div><strong>Error:</strong> {self.generate_copy_button(test['error'], 'error')}
+                <pre style='color: red;'>{test['error']}</pre></div>
                 """
 
             flaky_badge = ""
