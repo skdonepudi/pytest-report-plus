@@ -57,6 +57,7 @@ class JSONReporter:
             nodeid,
             status,
             duration,
+            trace=None,
             error=None,
             markers=None,
             filepath=None,
@@ -73,6 +74,7 @@ class JSONReporter:
             "nodeid": nodeid,
             "status": status,
             "duration": duration,
+            "trace": trace,
             "error": error,
             "markers": markers or [],
             "file": filepath,
@@ -136,36 +138,6 @@ class JSONReporter:
                     # Return relative path from output_dir for HTML src
                     return os.path.join("screenshots", file)
         return None
-
-    def format_error_with_diffs(self, error_text: str) -> str:
-        if not error_text:
-            return ""
-
-        lines = html.escape(error_text).splitlines()
-        html_lines = []
-        for line in lines:
-            stripped = line.strip()
-            if stripped.startswith("-"):
-                html_lines.append(
-                    f"<div style='color: red; background-color: #ffecec; padding: 2px; border-left: 4px solid red;'>❌ {line}</div>"
-                )
-            elif stripped.startswith("+"):
-                html_lines.append(
-                    f"<div style='color: green; background-color: #eaffea; padding: 2px; border-left: 4px solid green;'>✅ {line}</div>"
-                )
-            elif stripped.startswith("E "):
-                html_lines.append(
-                    f"<div style='color: #d8000c; background-color: #fff2f2; padding: 2px; border-left: 4px solid #d8000c;'>{line}</div>"
-                )
-            elif "AssertionError" in stripped:
-                html_lines.append(
-                    f"<div style='color: darkorange; font-weight: bold; padding: 2px;'>{line}</div>"
-                )
-            else:
-                html_lines.append(
-                    f"<pre style='margin: 0; font-family: monospace;'>{line}</pre>"
-                )
-        return "\n".join(html_lines)
 
     def generate_copy_button(self, content, label):
         return f"""
@@ -593,8 +565,6 @@ class JSONReporter:
                 'failed' if test['status'] == 'failed' else
                 'skipped'
             )
-            error_text = test.get("error", "")
-            error_html = f"<pre>{self.format_error_with_diffs(error_text)}</pre>" if error_text else ""
             screenshot_path = self.find_screenshot_and_copy(test['test'])
             screenshot_html = f'<div class="details-screenshot"><img src="{screenshot_path}" alt="Screenshot" onclick="toggleFullscreen(this)"></div>' if screenshot_path else ""
             markers = test.get("markers")
@@ -623,12 +593,21 @@ class JSONReporter:
                 <pre>{test['logs']}</pre></div>
                 """
 
+            trace_html = ""
+            if test.get('trace') and test['trace'].strip():
+                trace_html = f"""
+                <div><strong>Trace:</strong></strong>
+                <pre>{test['trace']}</pre></div>
+                """
+
+
             error_html = ""
-            if test.get('error'):
-                error_escaped = test['error'].replace("`", "\\`")
+            error_text = test.get("error", "")
+            if error_text:
+                error_escaped = error_text.replace("`", "\\`")
                 error_html = f"""
                 <div><strong>Error:</strong> {self.generate_copy_button(error_escaped, 'error')}
-                <pre>{test['error']}</pre></div>
+                <pre style='color: red;'>{error_text}</pre></div>
                 """
 
             flaky_badge = ""
@@ -697,6 +676,7 @@ class JSONReporter:
   <div class="details">
     <div class="details-content">
       <div class="details-text">
+        {trace_html}
         {error_html}
         {stdout_html}
         {stderr_html}
