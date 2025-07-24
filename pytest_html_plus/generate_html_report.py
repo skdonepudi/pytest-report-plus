@@ -139,13 +139,22 @@ class JSONReporter:
                     return os.path.join("screenshots", file)
         return None
 
+    def escape_for_js_template_literal(self, text):
+
+        return (
+            text.replace('\\', '\\\\')  # escape backslashes
+            .replace('`', '\\`')  # escape backticks
+            .replace('\n', '\\n')  # escape newlines
+        )
+
+
     def generate_copy_button(self, content, label):
-        escaped_text = json.dumps(content)
+        safe_content = self.escape_for_js_template_literal(content)
         return f"""
-        <button class="inline-copy-btn" onclick='event.stopPropagation(); copyRawText({escaped_text})' title="Copy {label}">
-            ⧉
-        </button>
-        """
+                <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`{safe_content}`)" title="Copy {label}">
+                    ⧉
+                </button>
+            """
 
     def generate_html_report(self):
         # Extract all unique markers
