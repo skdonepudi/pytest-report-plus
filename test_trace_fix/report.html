@@ -118,9 +118,6 @@
               button.innerHTML = originalContent;
             }, 1000);
           });
-        } catch (error) {
-          console.error("Copy button error:", error);
-        }
       }
 
       function toggleFullscreen(img) {
@@ -425,12 +422,24 @@
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/dummy_tests/test_cases.py::test_fail</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZHVtbXlfdGVzdHMvdGVzdF9jYXNlcy5weTo6dGVzdF9mYWls', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/dummy_tests/test_cases.py::test_fail')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -486,12 +495,24 @@
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/dummy_tests/test_cases.py::test_pass</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZHVtbXlfdGVzdHMvdGVzdF9jYXNlcy5weTo6dGVzdF9wYXNz', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/dummy_tests/test_cases.py::test_pass')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -547,12 +568,24 @@
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/dummy_tests/test_cases.py::test_skip</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZHVtbXlfdGVzdHMvdGVzdF9jYXNlcy5weTo6dGVzdF9za2lw', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/dummy_tests/test_cases.py::test_skip')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -590,12 +623,24 @@
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_send_email_success</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3Rfc2VuZF9lbWFpbF9zdWNjZXNz', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_send_email_success')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -644,12 +689,24 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_invalid_sendgrid_key_warning</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3RfaW52YWxpZF9zZW5kZ3JpZF9rZXlfd2FybmluZw==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_invalid_sendgrid_key_warning')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -687,12 +744,24 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_load_email_env_file_not_found</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3RfbG9hZF9lbWFpbF9lbnZfZmlsZV9ub3RfZm91bmQ=', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_load_email_env_file_not_found')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -730,12 +799,24 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_send_email_handles_exception</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3Rfc2VuZF9lbWFpbF9oYW5kbGVzX2V4Y2VwdGlvbg==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_send_email_handles_exception')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -782,12 +863,24 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_warns_on_invalid_sendgrid_key</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3Rfd2FybnNfb25faW52YWxpZF9zZW5kZ3JpZF9rZXk=', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_warns_on_invalid_sendgrid_key')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -825,12 +918,24 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_load_email_env_parses_file_correctly</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3RfbG9hZF9lbWFpbF9lbnZfcGFyc2VzX2ZpbGVfY29ycmVjdGx5', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_load_email_env_parses_file_correctly')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -868,12 +973,24 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_plugin.py::test_plugin_logs_expected_results</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfcGx1Z2luLnB5Ojp0ZXN0X3BsdWdpbl9sb2dzX2V4cGVjdGVkX3Jlc3VsdHM=', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_plugin.py::test_plugin_logs_expected_results')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1129,12 +1246,24 @@ E           ============================================================</pre></
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_screenshots.py::test_take_screenshot_on_failure_creates_file</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3Rfc2NyZWVuc2hvdHMucHk6OnRlc3RfdGFrZV9zY3JlZW5zaG90X29uX2ZhaWx1cmVfY3JlYXRlc19maWxl', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_screenshots.py::test_take_screenshot_on_failure_creates_file')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1172,12 +1301,24 @@ E           ============================================================</pre></
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_screenshots.py::test_take_screenshot_selenium_creates_file</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3Rfc2NyZWVuc2hvdHMucHk6OnRlc3RfdGFrZV9zY3JlZW5zaG90X3NlbGVuaXVtX2NyZWF0ZXNfZmlsZQ==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_screenshots.py::test_take_screenshot_selenium_creates_file')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1215,12 +1356,24 @@ E           ============================================================</pre></
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_flaky_badge.py::test_flaky_network_call</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2ZsYWt5X2JhZGdlLnB5Ojp0ZXN0X2ZsYWt5X25ldHdvcmtfY2FsbA==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_flaky_badge.py::test_flaky_network_call')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1278,12 +1431,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_merges_multiple_jsons_with_same_nodeid</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9tZXJnZXNfbXVsdGlwbGVfanNvbnNfd2l0aF9zYW1lX25vZGVpZA==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_merges_multiple_jsons_with_same_nodeid')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1330,12 +1495,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_fallback_to_test_key</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9mYWxsYmFja190b190ZXN0X2tleQ==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_fallback_to_test_key')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1373,12 +1550,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_ignores_invalid_json</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9pZ25vcmVzX2ludmFsaWRfanNvbg==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_ignores_invalid_json')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1425,12 +1614,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_non_flaky_test</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9ub25fZmxha3lfdGVzdA==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_non_flaky_test')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1468,12 +1669,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_flaky_status_detection</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9mbGFreV9zdGF0dXNfZGV0ZWN0aW9u', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_flaky_status_detection')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1511,12 +1724,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_merges_dict_with_results_key</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9tZXJnZXNfZGljdF93aXRoX3Jlc3VsdHNfa2V5', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_merges_dict_with_results_key')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1554,12 +1779,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_single_non_flaky_test</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtfZmxha3lfdGVzdHMucHk6OlRlc3RNYXJrRmxha3lUZXN0czo6dGVzdF9zaW5nbGVfbm9uX2ZsYWt5X3Rlc3Q=', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_single_non_flaky_test')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1597,12 +1834,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_flaky_test_with_multiple_attempts</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtfZmxha3lfdGVzdHMucHk6OlRlc3RNYXJrRmxha3lUZXN0czo6dGVzdF9mbGFreV90ZXN0X3dpdGhfbXVsdGlwbGVfYXR0ZW1wdHM=', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_flaky_test_with_multiple_attempts')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1640,12 +1889,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_mixed_tests_flaky_and_non_flaky</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtfZmxha3lfdGVzdHMucHk6OlRlc3RNYXJrRmxha3lUZXN0czo6dGVzdF9taXhlZF90ZXN0c19mbGFreV9hbmRfbm9uX2ZsYWt5', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_mixed_tests_flaky_and_non_flaky')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1683,12 +1944,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_preserves_other_fields</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtfZmxha3lfdGVzdHMucHk6OlRlc3RNYXJrRmxha3lUZXN0czo6dGVzdF9wcmVzZXJ2ZXNfb3RoZXJfZmllbGRz', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_preserves_other_fields')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1726,12 +1999,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_marker_links.py::test_extract_links_with_multiple_marker_names</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtlcl9saW5rcy5weTo6dGVzdF9leHRyYWN0X2xpbmtzX3dpdGhfbXVsdGlwbGVfbWFya2VyX25hbWVz', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_marker_links.py::test_extract_links_with_multiple_marker_names')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1769,12 +2054,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_marker_links.py::test_extract_links_with_no_markers</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtlcl9saW5rcy5weTo6dGVzdF9leHRyYWN0X2xpbmtzX3dpdGhfbm9fbWFya2Vycw==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_marker_links.py::test_extract_links_with_no_markers')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1812,12 +2109,24 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_marker_links.py::test_extract_links_with_non_string_args</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtlcl9saW5rcy5weTo6dGVzdF9leHRyYWN0X2xpbmtzX3dpdGhfbm9uX3N0cmluZ19hcmdz', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_marker_links.py::test_extract_links_with_non_string_args')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>

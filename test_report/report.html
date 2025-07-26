@@ -85,13 +85,71 @@
       .header a { word-break: break-all; overflow-wrap: break-word; max-width: 150px; display: inline-block; }
       .nodeid-badge code { word-break: break-all; overflow-wrap: break-word; max-width: 300px; }
       
-      .inline-copy-btn { cursor: pointer; background: none; border: 1px solid #ddd; border-radius: 3px; padding: 2px 4px; font-size: 0.8em; margin-left: 8px; color: #666; transition: all 0.2s ease; line-height: 1; } 
-      .inline-copy-btn:hover { border-color: #999; background: #f5f5f5; color: #333; }
-      .error-content pre { background: #fef2f2; border-left: 4px solid #dc2626; padding: 12px; border-radius: 4px; color: #7f1d1d; margin: 8px 0; }
-      .trace-content pre { background: #fef7ed; border-left: 4px solid #ea580c; padding: 12px; border-radius: 4px; color: #9a3412; margin: 8px 0; }
-      .details-text div pre { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 4px; margin: 8px 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.85em; line-height: 1.4; }
-      .details-text div strong { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 600; color: #374151; }
-      .trace-content strong, .error-content strong { margin-bottom: 12px; }
+      /* Inline copy button styling */
+      .inline-copy-btn {
+        cursor: pointer;
+        background: none;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 2px 4px;
+        font-size: 0.8em;
+        margin-left: 8px;
+        color: #666;
+        transition: all 0.2s ease;
+        line-height: 1;
+      }
+      .inline-copy-btn:hover {
+        border-color: #999;
+        background: #f5f5f5;
+        color: #333;
+      }
+      
+      /* Error content styling */
+      .error-content pre {
+        background: #fef2f2;
+        border-left: 4px solid #dc2626;
+        padding: 12px;
+        border-radius: 4px;
+        color: #7f1d1d;
+        margin: 8px 0;
+      }
+      
+      /* Trace content styling */  
+      .trace-content pre {
+        background: #fef7ed;
+        border-left: 4px solid #ea580c;
+        padding: 12px;
+        border-radius: 4px;
+        color: #9a3412;
+        margin: 8px 0;
+      }
+      
+      /* Consistent styling for all output content */
+      .details-text div pre {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 12px;
+        border-radius: 4px;
+        margin: 8px 0;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.85em;
+        line-height: 1.4;
+      }
+      
+      /* Content section headers */
+      .details-text div strong {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #374151;
+      }
+      
+      /* Specific content type styling */
+      .trace-content strong, .error-content strong {
+        margin-bottom: 12px;
+      }
     </style>
 
     <script>
@@ -100,13 +158,10 @@
         const details = headerElem.nextElementSibling;
         details.style.display = (details.style.display === 'block') ? 'none' : 'block';
       }
-
-      function copyFromBase64(base64Content, button) {
+      function copyRawText(text, button) {
         try {
           const originalContent = button.innerHTML;
-          // Decode base64 content for copy
-          const decodedContent = atob(base64Content);
-          navigator.clipboard.writeText(decodedContent).then(() => {
+          navigator.clipboard.writeText(text).then(() => {
             button.innerHTML = '<span style="color: #2f7a33;">✓</span>';
             setTimeout(() => {
               button.innerHTML = originalContent;
@@ -120,8 +175,11 @@
           });
         } catch (error) {
           console.error("Copy button error:", error);
+          // Fallback - don't change button if there's an error
         }
       }
+
+
 
       function toggleFullscreen(img) {
         const overlay = document.getElementById('fullscreen-overlay');
@@ -425,12 +483,21 @@
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/dummy_tests/test_cases.py::test_fail</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZHVtbXlfdGVzdHMvdGVzdF9jYXNlcy5weTo6dGVzdF9mYWls', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/dummy_tests/test_cases.py::test_fail')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -448,7 +515,7 @@
         
         
         
-                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('c3Rkb3V0IGZyb20gZmFpbAo=', this)" title="Copy stdout">
+                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`stdout from fail\n`, this)" title="Copy stdout">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -458,7 +525,7 @@
 </pre></div>
                 
         
-                <div><strong>STDERR:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('c3RkZXJyIGZyb20gZmFpbAo=', this)" title="Copy stderr">
+                <div><strong>STDERR:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`stderr from fail\n`, this)" title="Copy stderr">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -486,12 +553,21 @@
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/dummy_tests/test_cases.py::test_pass</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZHVtbXlfdGVzdHMvdGVzdF9jYXNlcy5weTo6dGVzdF9wYXNz', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/dummy_tests/test_cases.py::test_pass')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -509,7 +585,7 @@
         
         
         
-                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('c3Rkb3V0IGZyb20gcGFzcwo=', this)" title="Copy stdout">
+                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`stdout from pass\n`, this)" title="Copy stdout">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -519,7 +595,7 @@
 </pre></div>
                 
         
-                <div><strong>STDERR:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('c3RkZXJyIGZyb20gcGFzcwo=', this)" title="Copy stderr">
+                <div><strong>STDERR:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`stderr from pass\n`, this)" title="Copy stderr">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -547,12 +623,21 @@
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/dummy_tests/test_cases.py::test_skip</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZHVtbXlfdGVzdHMvdGVzdF9jYXNlcy5weTo6dGVzdF9za2lw', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/dummy_tests/test_cases.py::test_skip')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -590,12 +675,21 @@
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_send_email_success</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3Rfc2VuZF9lbWFpbF9zdWNjZXNz', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_send_email_success')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -613,7 +707,7 @@
         
         
         
-                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgpUZXN0IFN1YmplY3QgaXMgc2VudCB0byByZWNpcGllbnRAZXhhbXBsZS5jb20gZnJvbSBzZW5kZXJAZXhhbXBsZS5jb20gc3VjY2Vzc2Z1bGx5CioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioK', this)" title="Copy stdout">
+                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`****************************************************************\nTest Subject is sent to recipient@example.com from sender@example.com successfully\n****************************************************************\n`, this)" title="Copy stdout">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -644,12 +738,21 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_invalid_sendgrid_key_warning</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3RfaW52YWxpZF9zZW5kZ3JpZF9rZXlfd2FybmluZw==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_invalid_sendgrid_key_warning')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -687,12 +790,21 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_load_email_env_file_not_found</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3RfbG9hZF9lbWFpbF9lbnZfZmlsZV9ub3RfZm91bmQ=', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_load_email_env_file_not_found')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -730,12 +842,21 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_send_email_handles_exception</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3Rfc2VuZF9lbWFpbF9oYW5kbGVzX2V4Y2VwdGlvbg==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_send_email_handles_exception')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -753,7 +874,7 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
         
         
         
-                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('4p2MIEZhaWxlZCB0byBzZW5kIGVtYWlsOiBTTVRQIEVycm9yCg==', this)" title="Copy stdout">
+                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`❌ Failed to send email: SMTP Error\n`, this)" title="Copy stdout">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -782,12 +903,21 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_warns_on_invalid_sendgrid_key</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3Rfd2FybnNfb25faW52YWxpZF9zZW5kZ3JpZF9rZXk=', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_warns_on_invalid_sendgrid_key')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -825,12 +955,21 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_email.py::test_load_email_env_parses_file_correctly</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfZW1haWwucHk6OnRlc3RfbG9hZF9lbWFpbF9lbnZfcGFyc2VzX2ZpbGVfY29ycmVjdGx5', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_email.py::test_load_email_env_parses_file_correctly')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -868,12 +1007,21 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_plugin.py::test_plugin_logs_expected_results</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3RfcGx1Z2luLnB5Ojp0ZXN0X3BsdWdpbl9sb2dzX2V4cGVjdGVkX3Jlc3VsdHM=', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_plugin.py::test_plugin_logs_expected_results')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -889,13 +1037,14 @@ Test Subject is sent to recipient@example.com from sender@example.com successful
     <div class="details-content">
       <div class="details-text">
         
-                    <div class="trace-content"><strong>Trace:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('ZGVmIHRlc3RfcGx1Z2luX2xvZ3NfZXhwZWN0ZWRfcmVzdWx0cygpOgogICAgICAgIHdpdGggdGVtcGZpbGUuVGVtcG9yYXJ5RGlyZWN0b3J5KCkgYXMgdG1wZGlyOgogICAgICAgICAgICByZXBvcnRfcGF0aCA9IG9zLnBhdGguam9pbih0bXBkaXIsICJyZXBvcnQuanNvbiIpCiAgICAKPiAgICAgICAgICAgcmVzdWx0ID0gc3VicHJvY2Vzcy5ydW4oCiAgICAgICAgICAgICAgICBbCiAgICAgICAgICAgICAgICAgICAgInBvZXRyeSIsICJydW4iLCAicHl0ZXN0IiwKICAgICAgICAgICAgICAgICAgICAidGVzdHMvZHVtbXlfdGVzdHMiLAogICAgICAgICAgICAgICAgICAgICItLWNhcHR1cmUtc2NyZWVuc2hvdHM9bm9uZSIsCiAgICAgICAgICAgICAgICAgICAgZiItLWpzb24tcmVwb3J0PXtyZXBvcnRfcGF0aH0iLAogICAgICAgICAgICAgICAgXSwKICAgICAgICAgICAgICAgIGNhcHR1cmVfb3V0cHV0PVRydWUsCiAgICAgICAgICAgICAgICB0ZXh0PVRydWUKICAgICAgICAgICAgKQoKdGVzdHMvZTJlL3Rlc3RfcGx1Z2luLnB5OjEzOiAKXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXwovTGlicmFyeS9GcmFtZXdvcmtzL1B5dGhvbi5mcmFtZXdvcmsvVmVyc2lvbnMvMy4xMi9saWIvcHl0aG9uMy4xMi9zdWJwcm9jZXNzLnB5OjU0ODogaW4gcnVuCiAgICB3aXRoIFBvcGVuKCpwb3BlbmFyZ3MsICoqa3dhcmdzKSBhcyBwcm9jZXNzOgovTGlicmFyeS9GcmFtZXdvcmtzL1B5dGhvbi5mcmFtZXdvcmsvVmVyc2lvbnMvMy4xMi9saWIvcHl0aG9uMy4xMi9zdWJwcm9jZXNzLnB5OjEwMjY6IGluIF9faW5pdF9fCiAgICBzZWxmLl9leGVjdXRlX2NoaWxkKGFyZ3MsIGV4ZWN1dGFibGUsIHByZWV4ZWNfZm4sIGNsb3NlX2ZkcywKXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXyBfIF8gXwoKc2VsZiA9IDxQb3BlbjogcmV0dXJuY29kZTogMjU1IGFyZ3M6IFsncG9ldHJ5JywgJ3J1bicsICdweXRlc3QnLCAndGVzdHMvZHVtbXlfdGVzdHMuLi4+CmFyZ3MgPSBbJ3BvZXRyeScsICdydW4nLCAncHl0ZXN0JywgJ3Rlc3RzL2R1bW15X3Rlc3RzJywgJy0tY2FwdHVyZS1zY3JlZW5zaG90cz1ub25lJywgJy0tanNvbi1yZXBvcnQ9L3Zhci9mb2xkZXJzL2cyL19tajcxdDRuMng5N2JremJmeWY0OHE1cjAwMDBnbi9UL3RtcG94bXRyZV85L3JlcG9ydC5qc29uJ10KZXhlY3V0YWJsZSA9IGIncG9ldHJ5JywgcHJlZXhlY19mbiA9IE5vbmUsIGNsb3NlX2ZkcyA9IFRydWUsIHBhc3NfZmRzID0gKCksIGN3ZCA9IE5vbmUsIGVudiA9IE5vbmUsIHN0YXJ0dXBpbmZvID0gTm9uZSwgY3JlYXRpb25mbGFncyA9IDAsIHNoZWxsID0gRmFsc2UsIHAyY3JlYWQgPSAtMSwgcDJjd3JpdGUgPSAtMQpjMnByZWFkID0gOCwgYzJwd3JpdGUgPSA5LCBlcnJyZWFkID0gMTAsIGVycndyaXRlID0gMTEsIHJlc3RvcmVfc2lnbmFscyA9IFRydWUsIGdpZCA9IE5vbmUsIGdpZHMgPSBOb25lLCB1aWQgPSBOb25lLCB1bWFzayA9IC0xLCBzdGFydF9uZXdfc2Vzc2lvbiA9IEZhbHNlLCBwcm9jZXNzX2dyb3VwID0gLTEKCiAgICBkZWYgX2V4ZWN1dGVfY2hpbGQoc2VsZiwgYXJncywgZXhlY3V0YWJsZSwgcHJlZXhlY19mbiwgY2xvc2VfZmRzLAogICAgICAgICAgICAgICAgICAgICAgIHBhc3NfZmRzLCBjd2QsIGVudiwKICAgICAgICAgICAgICAgICAgICAgICBzdGFydHVwaW5mbywgY3JlYXRpb25mbGFncywgc2hlbGwsCiAgICAgICAgICAgICAgICAgICAgICAgcDJjcmVhZCwgcDJjd3JpdGUsCiAgICAgICAgICAgICAgICAgICAgICAgYzJwcmVhZCwgYzJwd3JpdGUsCiAgICAgICAgICAgICAgICAgICAgICAgZXJycmVhZCwgZXJyd3JpdGUsCiAgICAgICAgICAgICAgICAgICAgICAgcmVzdG9yZV9zaWduYWxzLAogICAgICAgICAgICAgICAgICAgICAgIGdpZCwgZ2lkcywgdWlkLCB1bWFzaywKICAgICAgICAgICAgICAgICAgICAgICBzdGFydF9uZXdfc2Vzc2lvbiwgcHJvY2Vzc19ncm91cCk6CiAgICAgICAgIiIiRXhlY3V0ZSBwcm9ncmFtIChQT1NJWCB2ZXJzaW9uKSIiIgogICAgCiAgICAgICAgaWYgaXNpbnN0YW5jZShhcmdzLCAoc3RyLCBieXRlcykpOgogICAgICAgICAgICBhcmdzID0gW2FyZ3NdCiAgICAgICAgZWxpZiBpc2luc3RhbmNlKGFyZ3MsIG9zLlBhdGhMaWtlKToKICAgICAgICAgICAgaWYgc2hlbGw6CiAgICAgICAgICAgICAgICByYWlzZSBUeXBlRXJyb3IoJ3BhdGgtbGlrZSBhcmdzIGlzIG5vdCBhbGxvd2VkIHdoZW4gJwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICdzaGVsbCBpcyB0cnVlJykKICAgICAgICAgICAgYXJncyA9IFthcmdzXQogICAgICAgIGVsc2U6CiAgICAgICAgICAgIGFyZ3MgPSBsaXN0KGFyZ3MpCiAgICAKICAgICAgICBpZiBzaGVsbDoKICAgICAgICAgICAgIyBPbiBBbmRyb2lkIHRoZSBkZWZhdWx0IHNoZWxsIGlzIGF0ICcvc3lzdGVtL2Jpbi9zaCcuCiAgICAgICAgICAgIHVuaXhfc2hlbGwgPSAoJy9zeXN0ZW0vYmluL3NoJyBpZgogICAgICAgICAgICAgICAgICAgICAgaGFzYXR0cihzeXMsICdnZXRhbmRyb2lkYXBpbGV2ZWwnKSBlbHNlICcvYmluL3NoJykKICAgICAgICAgICAgYXJncyA9IFt1bml4X3NoZWxsLCAiLWMiXSArIGFyZ3MKICAgICAgICAgICAgaWYgZXhlY3V0YWJsZToKICAgICAgICAgICAgICAgIGFyZ3NbMF0gPSBleGVjdXRhYmxlCiAgICAKICAgICAgICBpZiBleGVjdXRhYmxlIGlzIE5vbmU6CiAgICAgICAgICAgIGV4ZWN1dGFibGUgPSBhcmdzWzBdCiAgICAKICAgICAgICBzeXMuYXVkaXQoInN1YnByb2Nlc3MuUG9wZW4iLCBleGVjdXRhYmxlLCBhcmdzLCBjd2QsIGVudikKICAgIAogICAgICAgIGlmIChfVVNFX1BPU0lYX1NQQVdOCiAgICAgICAgICAgICAgICBhbmQgb3MucGF0aC5kaXJuYW1lKGV4ZWN1dGFibGUpCiAgICAgICAgICAgICAgICBhbmQgcHJlZXhlY19mbiBpcyBOb25lCiAgICAgICAgICAgICAgICBhbmQgbm90IGNsb3NlX2ZkcwogICAgICAgICAgICAgICAgYW5kIG5vdCBwYXNzX2ZkcwogICAgICAgICAgICAgICAgYW5kIGN3ZCBpcyBOb25lCiAgICAgICAgICAgICAgICBhbmQgKHAyY3JlYWQgPT0gLTEgb3IgcDJjcmVhZCA+IDIpCiAgICAgICAgICAgICAgICBhbmQgKGMycHdyaXRlID09IC0xIG9yIGMycHdyaXRlID4gMikKICAgICAgICAgICAgICAgIGFuZCAoZXJyd3JpdGUgPT0gLTEgb3IgZXJyd3JpdGUgPiAyKQogICAgICAgICAgICAgICAgYW5kIG5vdCBzdGFydF9uZXdfc2Vzc2lvbgogICAgICAgICAgICAgICAgYW5kIHByb2Nlc3NfZ3JvdXAgPT0gLTEKICAgICAgICAgICAgICAgIGFuZCBnaWQgaXMgTm9uZQogICAgICAgICAgICAgICAgYW5kIGdpZHMgaXMgTm9uZQogICAgICAgICAgICAgICAgYW5kIHVpZCBpcyBOb25lCiAgICAgICAgICAgICAgICBhbmQgdW1hc2sgPCAwKToKICAgICAgICAgICAgc2VsZi5fcG9zaXhfc3Bhd24oYXJncywgZXhlY3V0YWJsZSwgZW52LCByZXN0b3JlX3NpZ25hbHMsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHAyY3JlYWQsIHAyY3dyaXRlLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjMnByZWFkLCBjMnB3cml0ZSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZXJycmVhZCwgZXJyd3JpdGUpCiAgICAgICAgICAgIHJldHVybgogICAgCiAgICAgICAgb3JpZ19leGVjdXRhYmxlID0gZXhlY3V0YWJsZQogICAgCiAgICAgICAgIyBGb3IgdHJhbnNmZXJyaW5nIHBvc3NpYmxlIGV4ZWMgZmFpbHVyZSBmcm9tIGNoaWxkIHRvIHBhcmVudC4KICAgICAgICAjIERhdGEgZm9ybWF0OiAiZXhjZXB0aW9uIG5hbWU6aGV4IGVycm5vOmRlc2NyaXB0aW9uIgogICAgICAgICMgUGlja2xlIGlzIG5vdCB1c2VkOyBpdCBpcyBjb21wbGV4IGFuZCBpbnZvbHZlcyBtZW1vcnkgYWxsb2NhdGlvbi4KICAgICAgICBlcnJwaXBlX3JlYWQsIGVycnBpcGVfd3JpdGUgPSBvcy5waXBlKCkKICAgICAgICAjIGVycnBpcGVfd3JpdGUgbXVzdCBub3QgYmUgaW4gdGhlIHN0YW5kYXJkIGlvIDAsIDEsIG9yIDIgZmQgcmFuZ2UuCiAgICAgICAgbG93X2Zkc190b19jbG9zZSA9IFtdCiAgICAgICAgd2hpbGUgZXJycGlwZV93cml0ZSA8IDM6CiAgICAgICAgICAgIGxvd19mZHNfdG9fY2xvc2UuYXBwZW5kKGVycnBpcGVfd3JpdGUpCiAgICAgICAgICAgIGVycnBpcGVfd3JpdGUgPSBvcy5kdXAoZXJycGlwZV93cml0ZSkKICAgICAgICBmb3IgbG93X2ZkIGluIGxvd19mZHNfdG9fY2xvc2U6CiAgICAgICAgICAgIG9zLmNsb3NlKGxvd19mZCkKICAgICAgICB0cnk6CiAgICAgICAgICAgIHRyeToKICAgICAgICAgICAgICAgICMgV2UgbXVzdCBhdm9pZCBjb21wbGV4IHdvcmsgdGhhdCBjb3VsZCBpbnZvbHZlCiAgICAgICAgICAgICAgICAjIG1hbGxvYyBvciBmcmVlIGluIHRoZSBjaGlsZCBwcm9jZXNzIHRvIGF2b2lkCiAgICAgICAgICAgICAgICAjIHBvdGVudGlhbCBkZWFkbG9ja3MsIHRodXMgd2UgZG8gYWxsIHRoaXMgaGVyZS4KICAgICAgICAgICAgICAgICMgYW5kIHBhc3MgaXQgdG8gZm9ya19leGVjKCkKICAgIAogICAgICAgICAgICAgICAgaWYgZW52IGlzIG5vdCBOb25lOgogICAgICAgICAgICAgICAgICAgIGVudl9saXN0ID0gW10KICAgICAgICAgICAgICAgICAgICBmb3IgaywgdiBpbiBlbnYuaXRlbXMoKToKICAgICAgICAgICAgICAgICAgICAgICAgayA9IG9zLmZzZW5jb2RlKGspCiAgICAgICAgICAgICAgICAgICAgICAgIGlmIGInPScgaW4gazoKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoImlsbGVnYWwgZW52aXJvbm1lbnQgdmFyaWFibGUgbmFtZSIpCiAgICAgICAgICAgICAgICAgICAgICAgIGVudl9saXN0LmFwcGVuZChrICsgYic9JyArIG9zLmZzZW5jb2RlKHYpKQogICAgICAgICAgICAgICAgZWxzZToKICAgICAgICAgICAgICAgICAgICBlbnZfbGlzdCA9IE5vbmUgICMgVXNlIGV4ZWN2IGluc3RlYWQgb2YgZXhlY3ZlLgogICAgICAgICAgICAgICAgZXhlY3V0YWJsZSA9IG9zLmZzZW5jb2RlKGV4ZWN1dGFibGUpCiAgICAgICAgICAgICAgICBpZiBvcy5wYXRoLmRpcm5hbWUoZXhlY3V0YWJsZSk6CiAgICAgICAgICAgICAgICAgICAgZXhlY3V0YWJsZV9saXN0ID0gKGV4ZWN1dGFibGUsKQogICAgICAgICAgICAgICAgZWxzZToKICAgICAgICAgICAgICAgICAgICAjIFRoaXMgbWF0Y2hlcyB0aGUgYmVoYXZpb3Igb2Ygb3MuX2V4ZWN2cGUoKS4KICAgICAgICAgICAgICAgICAgICBleGVjdXRhYmxlX2xpc3QgPSB0dXBsZSgKICAgICAgICAgICAgICAgICAgICAgICAgb3MucGF0aC5qb2luKG9zLmZzZW5jb2RlKGRpciksIGV4ZWN1dGFibGUpCiAgICAgICAgICAgICAgICAgICAgICAgIGZvciBkaXIgaW4gb3MuZ2V0X2V4ZWNfcGF0aChlbnYpKQogICAgICAgICAgICAgICAgZmRzX3RvX2tlZXAgPSBzZXQocGFzc19mZHMpCiAgICAgICAgICAgICAgICBmZHNfdG9fa2VlcC5hZGQoZXJycGlwZV93cml0ZSkKICAgICAgICAgICAgICAgIHNlbGYucGlkID0gX2ZvcmtfZXhlYygKICAgICAgICAgICAgICAgICAgICAgICAgYXJncywgZXhlY3V0YWJsZV9saXN0LAogICAgICAgICAgICAgICAgICAgICAgICBjbG9zZV9mZHMsIHR1cGxlKHNvcnRlZChtYXAoaW50LCBmZHNfdG9fa2VlcCkpKSwKICAgICAgICAgICAgICAgICAgICAgICAgY3dkLCBlbnZfbGlzdCwKICAgICAgICAgICAgICAgICAgICAgICAgcDJjcmVhZCwgcDJjd3JpdGUsIGMycHJlYWQsIGMycHdyaXRlLAogICAgICAgICAgICAgICAgICAgICAgICBlcnJyZWFkLCBlcnJ3cml0ZSwKICAgICAgICAgICAgICAgICAgICAgICAgZXJycGlwZV9yZWFkLCBlcnJwaXBlX3dyaXRlLAogICAgICAgICAgICAgICAgICAgICAgICByZXN0b3JlX3NpZ25hbHMsIHN0YXJ0X25ld19zZXNzaW9uLAogICAgICAgICAgICAgICAgICAgICAgICBwcm9jZXNzX2dyb3VwLCBnaWQsIGdpZHMsIHVpZCwgdW1hc2ssCiAgICAgICAgICAgICAgICAgICAgICAgIHByZWV4ZWNfZm4sIF9VU0VfVkZPUkspCiAgICAgICAgICAgICAgICBzZWxmLl9jaGlsZF9jcmVhdGVkID0gVHJ1ZQogICAgICAgICAgICBmaW5hbGx5OgogICAgICAgICAgICAgICAgIyBiZSBzdXJlIHRoZSBGRCBpcyBjbG9zZWQgbm8gbWF0dGVyIHdoYXQKICAgICAgICAgICAgICAgIG9zLmNsb3NlKGVycnBpcGVfd3JpdGUpCiAgICAKICAgICAgICAgICAgc2VsZi5fY2xvc2VfcGlwZV9mZHMocDJjcmVhZCwgcDJjd3JpdGUsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGMycHJlYWQsIGMycHdyaXRlLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBlcnJyZWFkLCBlcnJ3cml0ZSkKICAgIAogICAgICAgICAgICAjIFdhaXQgZm9yIGV4ZWMgdG8gZmFpbCBvciBzdWNjZWVkOyBwb3NzaWJseSByYWlzaW5nIGFuCiAgICAgICAgICAgICMgZXhjZXB0aW9uIChsaW1pdGVkIGluIHNpemUpCiAgICAgICAgICAgIGVycnBpcGVfZGF0YSA9IGJ5dGVhcnJheSgpCiAgICAgICAgICAgIHdoaWxlIFRydWU6CiAgICAgICAgICAgICAgICBwYXJ0ID0gb3MucmVhZChlcnJwaXBlX3JlYWQsIDUwMDAwKQogICAgICAgICAgICAgICAgZXJycGlwZV9kYXRhICs9IHBhcnQKICAgICAgICAgICAgICAgIGlmIG5vdCBwYXJ0IG9yIGxlbihlcnJwaXBlX2RhdGEpID4gNTAwMDA6CiAgICAgICAgICAgICAgICAgICAgYnJlYWsKICAgICAgICBmaW5hbGx5OgogICAgICAgICAgICAjIGJlIHN1cmUgdGhlIEZEIGlzIGNsb3NlZCBubyBtYXR0ZXIgd2hhdAogICAgICAgICAgICBvcy5jbG9zZShlcnJwaXBlX3JlYWQpCiAgICAKICAgICAgICBpZiBlcnJwaXBlX2RhdGE6CiAgICAgICAgICAgIHRyeToKICAgICAgICAgICAgICAgIHBpZCwgc3RzID0gb3Mud2FpdHBpZChzZWxmLnBpZCwgMCkKICAgICAgICAgICAgICAgIGlmIHBpZCA9PSBzZWxmLnBpZDoKICAgICAgICAgICAgICAgICAgICBzZWxmLl9oYW5kbGVfZXhpdHN0YXR1cyhzdHMpCiAgICAgICAgICAgICAgICBlbHNlOgogICAgICAgICAgICAgICAgICAgIHNlbGYucmV0dXJuY29kZSA9IHN5cy5tYXhzaXplCiAgICAgICAgICAgIGV4Y2VwdCBDaGlsZFByb2Nlc3NFcnJvcjoKICAgICAgICAgICAgICAgIHBhc3MKICAgIAogICAgICAgICAgICB0cnk6CiAgICAgICAgICAgICAgICBleGNlcHRpb25fbmFtZSwgaGV4X2Vycm5vLCBlcnJfbXNnID0gKAogICAgICAgICAgICAgICAgICAgICAgICBlcnJwaXBlX2RhdGEuc3BsaXQoYic6JywgMikpCiAgICAgICAgICAgICAgICAjIFRoZSBlbmNvZGluZyBoZXJlIHNob3VsZCBtYXRjaCB0aGUgZW5jb2RpbmcKICAgICAgICAgICAgICAgICMgd3JpdHRlbiBpbiBieSB0aGUgc3VicHJvY2VzcyBpbXBsZW1lbnRhdGlvbnMKICAgICAgICAgICAgICAgICMgbGlrZSBfcG9zaXhzdWJwcm9jZXNzCiAgICAgICAgICAgICAgICBlcnJfbXNnID0gZXJyX21zZy5kZWNvZGUoKQogICAgICAgICAgICBleGNlcHQgVmFsdWVFcnJvcjoKICAgICAgICAgICAgICAgIGV4Y2VwdGlvbl9uYW1lID0gYidTdWJwcm9jZXNzRXJyb3InCiAgICAgICAgICAgICAgICBoZXhfZXJybm8gPSBiJzAnCiAgICAgICAgICAgICAgICBlcnJfbXNnID0gJ0JhZCBleGNlcHRpb24gZGF0YSBmcm9tIGNoaWxkOiB7IXJ9Jy5mb3JtYXQoCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJ5dGVzKGVycnBpcGVfZGF0YSkpCiAgICAgICAgICAgIGNoaWxkX2V4Y2VwdGlvbl90eXBlID0gZ2V0YXR0cigKICAgICAgICAgICAgICAgICAgICBidWlsdGlucywgZXhjZXB0aW9uX25hbWUuZGVjb2RlKCdhc2NpaScpLAogICAgICAgICAgICAgICAgICAgIFN1YnByb2Nlc3NFcnJvcikKICAgICAgICAgICAgaWYgaXNzdWJjbGFzcyhjaGlsZF9leGNlcHRpb25fdHlwZSwgT1NFcnJvcikgYW5kIGhleF9lcnJubzoKICAgICAgICAgICAgICAgIGVycm5vX251bSA9IGludChoZXhfZXJybm8sIDE2KQogICAgICAgICAgICAgICAgaWYgZXJyX21zZyA9PSAibm9leGVjOmNoZGlyIjoKICAgICAgICAgICAgICAgICAgICBlcnJfbXNnID0gIiIKICAgICAgICAgICAgICAgICAgICAjIFRoZSBlcnJvciBtdXN0IGJlIGZyb20gY2hkaXIoY3dkKS4KICAgICAgICAgICAgICAgICAgICBlcnJfZmlsZW5hbWUgPSBjd2QKICAgICAgICAgICAgICAgIGVsaWYgZXJyX21zZyA9PSAibm9leGVjIjoKICAgICAgICAgICAgICAgICAgICBlcnJfbXNnID0gIiIKICAgICAgICAgICAgICAgICAgICBlcnJfZmlsZW5hbWUgPSBOb25lCiAgICAgICAgICAgICAgICBlbHNlOgogICAgICAgICAgICAgICAgICAgIGVycl9maWxlbmFtZSA9IG9yaWdfZXhlY3V0YWJsZQogICAgICAgICAgICAgICAgaWYgZXJybm9fbnVtICE9IDA6CiAgICAgICAgICAgICAgICAgICAgZXJyX21zZyA9IG9zLnN0cmVycm9yKGVycm5vX251bSkKICAgICAgICAgICAgICAgIGlmIGVycl9maWxlbmFtZSBpcyBub3QgTm9uZToKPiAgICAgICAgICAgICAgICAgICByYWlzZSBjaGlsZF9leGNlcHRpb25fdHlwZShlcnJub19udW0sIGVycl9tc2csIGVycl9maWxlbmFtZSk=', this)" title="Copy trace">
+        
+                <div class="error-content"><strong>Error:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`def test_plugin_logs_expected_results():\n        with tempfile.TemporaryDirectory() as tmpdir:\n            report_path = os.path.join(tmpdir, "report.json")\n    \n>           result = subprocess.run(\n                [\n                    "poetry", "run", "pytest",\n                    "tests/dummy_tests",\n                    "--capture-screenshots=none",\n                    f"--json-report={report_path}",\n                ],\n                capture_output=True,\n                text=True\n            )\n\ntests/e2e/test_plugin.py:13: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py:548: in run\n    with Popen(*popenargs, **kwargs) as process:\n/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py:1026: in __init__\n    self._execute_child(args, executable, preexec_fn, close_fds,\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\nself = <Popen: returncode: 255 args: ['poetry', 'run', 'pytest', 'tests/dummy_tests...>\nargs = ['poetry', 'run', 'pytest', 'tests/dummy_tests', '--capture-screenshots=none', '--json-report=/var/folders/g2/_mj71t4n2x97bkzbfyf48q5r0000gn/T/tmpoxmtre_9/report.json']\nexecutable = b'poetry', preexec_fn = None, close_fds = True, pass_fds = (), cwd = None, env = None, startupinfo = None, creationflags = 0, shell = False, p2cread = -1, p2cwrite = -1\nc2pread = 8, c2pwrite = 9, errread = 10, errwrite = 11, restore_signals = True, gid = None, gids = None, uid = None, umask = -1, start_new_session = False, process_group = -1\n\n    def _execute_child(self, args, executable, preexec_fn, close_fds,\n                       pass_fds, cwd, env,\n                       startupinfo, creationflags, shell,\n                       p2cread, p2cwrite,\n                       c2pread, c2pwrite,\n                       errread, errwrite,\n                       restore_signals,\n                       gid, gids, uid, umask,\n                       start_new_session, process_group):\n        """Execute program (POSIX version)"""\n    \n        if isinstance(args, (str, bytes)):\n            args = [args]\n        elif isinstance(args, os.PathLike):\n            if shell:\n                raise TypeError('path-like args is not allowed when '\n                                'shell is true')\n            args = [args]\n        else:\n            args = list(args)\n    \n        if shell:\n            # On Android the default shell is at '/system/bin/sh'.\n            unix_shell = ('/system/bin/sh' if\n                      hasattr(sys, 'getandroidapilevel') else '/bin/sh')\n            args = [unix_shell, "-c"] + args\n            if executable:\n                args[0] = executable\n    \n        if executable is None:\n            executable = args[0]\n    \n        sys.audit("subprocess.Popen", executable, args, cwd, env)\n    \n        if (_USE_POSIX_SPAWN\n                and os.path.dirname(executable)\n                and preexec_fn is None\n                and not close_fds\n                and not pass_fds\n                and cwd is None\n                and (p2cread == -1 or p2cread > 2)\n                and (c2pwrite == -1 or c2pwrite > 2)\n                and (errwrite == -1 or errwrite > 2)\n                and not start_new_session\n                and process_group == -1\n                and gid is None\n                and gids is None\n                and uid is None\n                and umask < 0):\n            self._posix_spawn(args, executable, env, restore_signals,\n                              p2cread, p2cwrite,\n                              c2pread, c2pwrite,\n                              errread, errwrite)\n            return\n    \n        orig_executable = executable\n    \n        # For transferring possible exec failure from child to parent.\n        # Data format: "exception name:hex errno:description"\n        # Pickle is not used; it is complex and involves memory allocation.\n        errpipe_read, errpipe_write = os.pipe()\n        # errpipe_write must not be in the standard io 0, 1, or 2 fd range.\n        low_fds_to_close = []\n        while errpipe_write < 3:\n            low_fds_to_close.append(errpipe_write)\n            errpipe_write = os.dup(errpipe_write)\n        for low_fd in low_fds_to_close:\n            os.close(low_fd)\n        try:\n            try:\n                # We must avoid complex work that could involve\n                # malloc or free in the child process to avoid\n                # potential deadlocks, thus we do all this here.\n                # and pass it to fork_exec()\n    \n                if env is not None:\n                    env_list = []\n                    for k, v in env.items():\n                        k = os.fsencode(k)\n                        if b'=' in k:\n                            raise ValueError("illegal environment variable name")\n                        env_list.append(k + b'=' + os.fsencode(v))\n                else:\n                    env_list = None  # Use execv instead of execve.\n                executable = os.fsencode(executable)\n                if os.path.dirname(executable):\n                    executable_list = (executable,)\n                else:\n                    # This matches the behavior of os._execvpe().\n                    executable_list = tuple(\n                        os.path.join(os.fsencode(dir), executable)\n                        for dir in os.get_exec_path(env))\n                fds_to_keep = set(pass_fds)\n                fds_to_keep.add(errpipe_write)\n                self.pid = _fork_exec(\n                        args, executable_list,\n                        close_fds, tuple(sorted(map(int, fds_to_keep))),\n                        cwd, env_list,\n                        p2cread, p2cwrite, c2pread, c2pwrite,\n                        errread, errwrite,\n                        errpipe_read, errpipe_write,\n                        restore_signals, start_new_session,\n                        process_group, gid, gids, uid, umask,\n                        preexec_fn, _USE_VFORK)\n                self._child_created = True\n            finally:\n                # be sure the FD is closed no matter what\n                os.close(errpipe_write)\n    \n            self._close_pipe_fds(p2cread, p2cwrite,\n                                 c2pread, c2pwrite,\n                                 errread, errwrite)\n    \n            # Wait for exec to fail or succeed; possibly raising an\n            # exception (limited in size)\n            errpipe_data = bytearray()\n            while True:\n                part = os.read(errpipe_read, 50000)\n                errpipe_data += part\n                if not part or len(errpipe_data) > 50000:\n                    break\n        finally:\n            # be sure the FD is closed no matter what\n            os.close(errpipe_read)\n    \n        if errpipe_data:\n            try:\n                pid, sts = os.waitpid(self.pid, 0)\n                if pid == self.pid:\n                    self._handle_exitstatus(sts)\n                else:\n                    self.returncode = sys.maxsize\n            except ChildProcessError:\n                pass\n    \n            try:\n                exception_name, hex_errno, err_msg = (\n                        errpipe_data.split(b':', 2))\n                # The encoding here should match the encoding\n                # written in by the subprocess implementations\n                # like _posixsubprocess\n                err_msg = err_msg.decode()\n            except ValueError:\n                exception_name = b'SubprocessError'\n                hex_errno = b'0'\n                err_msg = 'Bad exception data from child: {!r}'.format(\n                              bytes(errpipe_data))\n            child_exception_type = getattr(\n                    builtins, exception_name.decode('ascii'),\n                    SubprocessError)\n            if issubclass(child_exception_type, OSError) and hex_errno:\n                errno_num = int(hex_errno, 16)\n                if err_msg == "noexec:chdir":\n                    err_msg = ""\n                    # The error must be from chdir(cwd).\n                    err_filename = cwd\n                elif err_msg == "noexec":\n                    err_msg = ""\n                    err_filename = None\n                else:\n                    err_filename = orig_executable\n                if errno_num != 0:\n                    err_msg = os.strerror(errno_num)\n                if err_filename is not None:\n>                   raise child_exception_type(errno_num, err_msg, err_filename)\nE                   FileNotFoundError: [Errno 2] No such file or directory: 'poetry'\n\n/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py:1955: FileNotFoundError`, this)" title="Copy error">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                     </svg>
                 </button>
-                    <pre>def test_plugin_logs_expected_results():
+                <pre>def test_plugin_logs_expected_results():
         with tempfile.TemporaryDirectory() as tmpdir:
             report_path = os.path.join(tmpdir, "report.json")
     
@@ -1087,30 +1236,14 @@ c2pread = 8, c2pwrite = 9, errread = 10, errwrite = 11, restore_signals = True, 
                 if errno_num != 0:
                     err_msg = os.strerror(errno_num)
                 if err_filename is not None:
->                   raise child_exception_type(errno_num, err_msg, err_filename)</pre></div>
-                    
-        
-                    <div class="error-content"><strong>Error:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('RSAgICAgICAgICAgICAgICAgICBGaWxlTm90Rm91bmRFcnJvcjogW0Vycm5vIDJdIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3Rvcnk6ICdwb2V0cnkn', this)" title="Copy error">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
-                    <pre>E                   FileNotFoundError: [Errno 2] No such file or directory: 'poetry'</pre></div>
-                    
+>                   raise child_exception_type(errno_num, err_msg, err_filename)
+E                   FileNotFoundError: [Errno 2] No such file or directory: 'poetry'
+
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py:1955: FileNotFoundError</pre></div>
+                
         
         
         
-                    <div><strong>Logs:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('RSAgICAgICAgICAgPT09PT09PT09PT09PT09PT09PT09PT09PT09IGxvZ3MgPT09PT09PT09PT09PT09PT09PT09PT09PT09CkUgICAgICAgICAgIHdhaXRpbmcgZm9yIGdldF9ieV90ZXN0X2lkKCJkc2FyLXN0ZXAtbmFtZSIpLmdldF9ieV90ZXh0KCJBY2Nlc3MgRGF0YSIsIGV4YWN0PVRydWUpCkUgICAgICAgICAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ==', this)" title="Copy logs">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
-                    <pre>E           =========================== logs ===========================
-E           waiting for get_by_test_id("dsar-step-name").get_by_text("Access Data", exact=True)
-E           ============================================================</pre></div>
-                    
       </div>
       
     </div>
@@ -1129,12 +1262,21 @@ E           ============================================================</pre></
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_screenshots.py::test_take_screenshot_on_failure_creates_file</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3Rfc2NyZWVuc2hvdHMucHk6OnRlc3RfdGFrZV9zY3JlZW5zaG90X29uX2ZhaWx1cmVfY3JlYXRlc19maWxl', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_screenshots.py::test_take_screenshot_on_failure_creates_file')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1172,12 +1314,21 @@ E           ============================================================</pre></
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/e2e/test_screenshots.py::test_take_screenshot_selenium_creates_file</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvZTJlL3Rlc3Rfc2NyZWVuc2hvdHMucHk6OnRlc3RfdGFrZV9zY3JlZW5zaG90X3NlbGVuaXVtX2NyZWF0ZXNfZmlsZQ==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/e2e/test_screenshots.py::test_take_screenshot_selenium_creates_file')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1215,12 +1366,21 @@ E           ============================================================</pre></
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_flaky_badge.py::test_flaky_network_call</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2ZsYWt5X2JhZGdlLnB5Ojp0ZXN0X2ZsYWt5X25ldHdvcmtfY2FsbA==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_flaky_badge.py::test_flaky_network_call')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1236,27 +1396,22 @@ E           ============================================================</pre></
     <div class="details-content">
       <div class="details-text">
         
-                    <div class="trace-content"><strong>Trace:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('ZGVmIHRlc3RfZmxha3lfbmV0d29ya19jYWxsKCk6CiAgICAgICAgYXR0ZW1wdF9jb3VudGVyWyJjb3VudCJdICs9IDEKICAgICAgICBpZiBhdHRlbXB0X2NvdW50ZXJbImNvdW50Il0gPT0gMToKPiAgICAgICAgICAgYXNzZXJ0IEZhbHNlLCAiU2ltdWxhdGVkIG5ldHdvcmsgZmFpbHVyZSI=', this)" title="Copy trace">
+        
+                <div class="error-content"><strong>Error:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`def test_flaky_network_call():\n        attempt_counter["count"] += 1\n        if attempt_counter["count"] == 1:\n>           assert False, "Simulated network failure"\nE           AssertionError: Simulated network failure\nE           assert False\n\ntests/unit/test_flaky_badge.py:9: AssertionError`, this)" title="Copy error">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                     </svg>
                 </button>
-                    <pre>def test_flaky_network_call():
+                <pre>def test_flaky_network_call():
         attempt_counter["count"] += 1
         if attempt_counter["count"] == 1:
->           assert False, "Simulated network failure"</pre></div>
-                    
-        
-                    <div class="error-content"><strong>Error:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('RSAgICAgICAgICAgQXNzZXJ0aW9uRXJyb3I6IFNpbXVsYXRlZCBuZXR3b3JrIGZhaWx1cmUKRSAgICAgICAgICAgYXNzZXJ0IEZhbHNl', this)" title="Copy error">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
-                    <pre>E           AssertionError: Simulated network failure
-E           assert False</pre></div>
-                    
+>           assert False, "Simulated network failure"
+E           AssertionError: Simulated network failure
+E           assert False
+
+tests/unit/test_flaky_badge.py:9: AssertionError</pre></div>
+                
         
         
         
@@ -1278,12 +1433,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_merges_multiple_jsons_with_same_nodeid</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9tZXJnZXNfbXVsdGlwbGVfanNvbnNfd2l0aF9zYW1lX25vZGVpZA==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_merges_multiple_jsons_with_same_nodeid')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1301,7 +1465,7 @@ E           assert False</pre></div>
         
         
         
-                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('W3snbm9kZWlkJzogJ3Rlc3Rfc2FtcGxlLnB5Ojp0ZXN0X2Nhc2UnLCAnc3RhdHVzJzogJ3Bhc3NlZCcsICdmbGFreSc6IFRydWUsICdmbGFreV9hdHRlbXB0cyc6IFsnZmFpbGVkJywgJ3Bhc3NlZCddfV0K', this)" title="Copy stdout">
+                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`[{'nodeid': 'test_sample.py::test_case', 'status': 'passed', 'flaky': True, 'flaky_attempts': ['failed', 'passed']}]\n`, this)" title="Copy stdout">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -1330,12 +1494,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_fallback_to_test_key</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9mYWxsYmFja190b190ZXN0X2tleQ==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_fallback_to_test_key')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1373,12 +1546,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_ignores_invalid_json</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9pZ25vcmVzX2ludmFsaWRfanNvbg==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_ignores_invalid_json')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1396,7 +1578,7 @@ E           assert False</pre></div>
         
         
         
-                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('4pqg77iPIENvdWxkIG5vdCBwYXJzZSBicm9rZW4uanNvbjogRXhwZWN0aW5nIHByb3BlcnR5IG5hbWUgZW5jbG9zZWQgaW4gZG91YmxlIHF1b3RlczogbGluZSAxIGNvbHVtbiAzIChjaGFyIDIpCg==', this)" title="Copy stdout">
+                <div><strong>STDOUT:</strong> <button class="inline-copy-btn" onclick="event.stopPropagation(); copyRawText(`⚠️ Could not parse broken.json: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)\n`, this)" title="Copy stdout">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -1425,12 +1607,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_non_flaky_test</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9ub25fZmxha3lfdGVzdA==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_non_flaky_test')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1468,12 +1659,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_flaky_status_detection</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9mbGFreV9zdGF0dXNfZGV0ZWN0aW9u', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_flaky_status_detection')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1511,12 +1711,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_json_merger.py::TestMergeJsonReports::test_merges_dict_with_results_key</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X2pzb25fbWVyZ2VyLnB5OjpUZXN0TWVyZ2VKc29uUmVwb3J0czo6dGVzdF9tZXJnZXNfZGljdF93aXRoX3Jlc3VsdHNfa2V5', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_json_merger.py::TestMergeJsonReports::test_merges_dict_with_results_key')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1554,12 +1763,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_single_non_flaky_test</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtfZmxha3lfdGVzdHMucHk6OlRlc3RNYXJrRmxha3lUZXN0czo6dGVzdF9zaW5nbGVfbm9uX2ZsYWt5X3Rlc3Q=', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_single_non_flaky_test')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1597,12 +1815,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_flaky_test_with_multiple_attempts</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtfZmxha3lfdGVzdHMucHk6OlRlc3RNYXJrRmxha3lUZXN0czo6dGVzdF9mbGFreV90ZXN0X3dpdGhfbXVsdGlwbGVfYXR0ZW1wdHM=', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_flaky_test_with_multiple_attempts')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1640,12 +1867,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_mixed_tests_flaky_and_non_flaky</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtfZmxha3lfdGVzdHMucHk6OlRlc3RNYXJrRmxha3lUZXN0czo6dGVzdF9taXhlZF90ZXN0c19mbGFreV9hbmRfbm9uX2ZsYWt5', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_mixed_tests_flaky_and_non_flaky')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1683,12 +1919,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_preserves_other_fields</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtfZmxha3lfdGVzdHMucHk6OlRlc3RNYXJrRmxha3lUZXN0czo6dGVzdF9wcmVzZXJ2ZXNfb3RoZXJfZmllbGRz', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_mark_flaky_tests.py::TestMarkFlakyTests::test_preserves_other_fields')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1726,12 +1971,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_marker_links.py::test_extract_links_with_multiple_marker_names</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtlcl9saW5rcy5weTo6dGVzdF9leHRyYWN0X2xpbmtzX3dpdGhfbXVsdGlwbGVfbWFya2VyX25hbWVz', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_marker_links.py::test_extract_links_with_multiple_marker_names')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1769,12 +2023,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_marker_links.py::test_extract_links_with_no_markers</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtlcl9saW5rcy5weTo6dGVzdF9leHRyYWN0X2xpbmtzX3dpdGhfbm9fbWFya2Vycw==', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_marker_links.py::test_extract_links_with_no_markers')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
@@ -1812,12 +2075,21 @@ E           assert False</pre></div>
     <div class="header-section meta">
       <span class="nodeid-badge" style="display: flex; align-items: center; gap: 6px;">
         <code style="font-size: 0.6em; color: #555;">tests/unit/test_marker_links.py::test_extract_links_with_non_string_args</code>
-<button class="inline-copy-btn" onclick="event.stopPropagation(); copyFromBase64('dGVzdHMvdW5pdC90ZXN0X21hcmtlcl9saW5rcy5weTo6dGVzdF9leHRyYWN0X2xpbmtzX3dpdGhfbm9uX3N0cmluZ19hcmdz', this)" title="Copy nodeid">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </button>
+        <button class="copy-btn"
+                onclick="event.stopPropagation(); copyToClipboard('tests/unit/test_marker_links.py::test_extract_links_with_non_string_args')"
+                title="Copy full test path"
+                style="
+                  cursor: pointer;
+                  background: none;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 1.2em;
+                  padding: 2px 4px;
+                  line-height: 1;
+                  color: #555;
+                ">
+          ⧉
+        </button>
       </span>
       <span class="worker-id" style="background: #ddd; border-radius: 3px; padding: 2px 5px; font-size: 0.85em; font-weight: bold;">main</span>
     </div>
