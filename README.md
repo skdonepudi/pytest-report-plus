@@ -1,13 +1,11 @@
-⚠️ Package renamed: This plugin was previously known as pytest-reporter-plus.
-
 > ⚡ **Plug. Play. Quickly debug without delay.**  
-> _Just install. No setup. Crystal-clear test reports out of the box._
+> _Just install. No setup. The best reporter for pytest._
 
 ## Get a self-contained, actionable, easy-to-read single page HTML unified reports summarizing all your test results — no hassle, just clarity. Detect **flaky tests**, and optionally send reports via email**. Works beautifully with or without `xdist`.
 
 [![Docs](https://img.shields.io/badge/docs-online-blue)](https://pytest-html-plus.readthedocs.io/en/latest/index.html) [![PyPI Downloads](https://static.pepy.tech/badge/pytest-html-plus)](https://pepy.tech/projects/pytest-html-plus) ![PyPI](https://img.shields.io/pypi/v/pytest-html-plus) ![Python Versions](https://img.shields.io/pypi/pyversions/pytest-html-plus)  ![License](https://img.shields.io/pypi/l/pytest-html-plus)  [![Unit Tests](https://github.com/reach2jeyan/pytest-report-plus/actions/workflows/unit-test.yml/badge.svg)](https://github.com/reach2jeyan/pytest-report-plus/actions/workflows/unit-test.yml)
 
-[![Discord](https://img.shields.io/discord/1377581416337903646?labelColor=black&logo=discord&logoColor=c20a71&style=for-the-badge&color=c20a71)](https://discord.gg/Pjy2sCBC) 
+[![Discord](https://img.shields.io/discord/1377581416337903646?labelColor=black&logo=discord&logoColor=c20a71&style=for-the-badge&color=c20a71)](https://discord.gg/nUNZ9crf) 
 
 ## 🚀 Installation
 
@@ -16,8 +14,6 @@ pip install pytest-html-plus
 # or with Poetry
 poetry add pytest-html-plus
 ```
-
-# Keep using your regular pytest commands — just plug this in to unlock the below powerful reporting features with zero extra effort.
 
 ## ✨ Features
 
@@ -37,9 +33,18 @@ No need for custom marker definitions. Perfect for smarter filtering, reporting,
 
 ![ScreenRecording2025-07-12at10 15 33PM-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/f000388f-cdbc-418d-829b-a54309b8ffc4)
 
+📦 Ship reports with provenance 📜 — full run metadata included 📋 and copy-ready.
+
+![ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/fa397d22-e40b-4e4a-9321-a2e88aea1c08)
+
+📋⚡ Turn failure context into a single click — copy logs, traces, and errors instantly for your team.
+
+![ezgif com-video-to-gif-converter (1)](https://github.com/user-attachments/assets/396e8cf6-862b-4619-82bf-81a8eae8e7b6)
+
 #### Easily track Untracked test scenarios
 
 ![ScreenRecording2025-06-29at1 06 02AM-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/af40622f-f548-44a5-982b-344c74a65e13)
+
 
 #### 🔍 Universal Test Search + Smart Link Navigation
 
