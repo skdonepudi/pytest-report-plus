@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "pytest-html-plus"
-version = "0.4.0"
-description = "Plugin for Auto-generated pytest single file HTML reports with filters, screenshots, logs, flaky detection & more — all without writing a single line of config even with xdist"
+version = "0.4.1"
+description = "Get started with rich pytest reports in under 3 seconds. Just install the plugin — no setup required. The simplest, fastest reporter for pytest."
 readme = "README.md"
-authors = ["Emjey", "Karan"]
+authors = ["reporterplus"]
 license = "MIT"
 packages = [{ include = "pytest_html_plus" }]
 keywords = [
