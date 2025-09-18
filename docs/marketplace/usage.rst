@@ -52,7 +52,6 @@ Add the action to your workflow after you install your project dependencies:
              name: pytest-reports
              path: |
                report_output/
-               screenshots/
 
 Inputs Reference
 --------
@@ -71,7 +70,7 @@ pytest-html-plus plugin options.
      - Path to test files/folders (e.g. ``tests/``). If empty, pytest auto-discovers tests.
      - ``""`` (discovery)
    * - ``pytestargs``
-     - Extra pytest arguments (e.g. coverage, reruns).
+     - Extra pytest arguments (e.g. coverage, reruns, -n for xdist etc).
      - ``""``
    * - ``jsonreport``
      - Path for JSON report.
