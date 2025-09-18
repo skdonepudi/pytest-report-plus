@@ -1,5 +1,5 @@
-> ⚡ **Plug. Play. Quickly debug without delay.**  
-> _Just install. No setup. The best reporter for pytest._
+⚡ **Plug. Play. Debug without delay.**  
+> _Get started with rich pytest reports in under 3 seconds. Just install — no setup required. The simplest, fastest reporter for pytest._
 
 ## Get a self-contained, actionable, easy-to-read single page HTML unified reports summarizing all your test results — no hassle, just clarity. Detect **flaky tests**, and optionally send reports via email**. Works beautifully with or without `xdist`.
 
@@ -16,6 +16,13 @@ pip install pytest-html-plus
 # or with Poetry
 poetry add pytest-html-plus
 ```
+
+## Pytest HTML Plus Action
+
+If you don’t want the burden of installing pytest-html-plus manually and your project already manages dependencies with `requirements.txt` or Poetry, use this GitHub Action to generate rich pytest reports automatically.
+
+[![🚀 Checkout on GitHub Marketplace](https://img.shields.io/badge/Marketplace-Pytest%20HTML%20Plus-blue?logo=github)](https://github.com/marketplace/actions/pytest-html-plus-action)
+[![Documentation](https://img.shields.io/badge/docs-readthedocs.io-brightgreen)](https://pytest-html-plus.readthedocs.io/en/main/marketplace/usage.html)
 
 ## ✨ Features
 
