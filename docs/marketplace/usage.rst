@@ -7,10 +7,6 @@ powered by `pytest-html-plus <https://pypi.org/project/pytest-html-plus/>`_.
 This action is designed to be lightweight: it does not install your project dependencies,
 but layers report generation on top of your existing pytest setup (pip or Poetry).
 
-.. contents::
-   :local:
-   :depth: 2
-
 Introduction
 ------------
 
